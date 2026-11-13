@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { api } from './api'
-import type { Tab } from './Header'
+import type { Tab } from './tabs'
 
 export type TahapStatus = 'belum' | 'jalan' | 'selesai' | 'cache' | 'gagal'
 export type Tahap = { id: string; nama: string; bobot: number; status: TahapStatus }

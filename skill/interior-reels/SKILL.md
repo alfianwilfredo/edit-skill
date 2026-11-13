@@ -36,6 +36,7 @@ Jalankan `bash SKILL/setup.sh`. Kalau ada GAGAL, bereskan dulu. Baca `SKILL/bran
 2. **Scan.** Jalankan `scan_clips.py <folder>` untuk membuat `<folder>/_scan/`.
 3. **Lihat SETIAP grid** `_scan/<klip>.jpg` dengan tool view. Untuk tiap klip catat dalam tabel: jenis shot (wide / medium / detail / walk-through / pan), ruangan, kualitas (goyang, gelap, terlalu terang, ada orang atau barang berantakan), detik terbaik (`detik_frame` di `manifest.json` memetakan kotak grid ke detik), dan arah gerak kamera. Jangan lanjut sebelum semua grid dilihat.
 4. **Pilih pattern** dari `SKILL/patterns/*.json`, sesuai permintaan atau default. Kalau pemilihan otomatis, pilih yang `cocok_untuk`-nya paling sesuai dengan jumlah dan isi klip.
+   Baca `catatan_training` pattern terpilih (kalau ada) dan terapkan pelajarannya saat mengisi slot.
 5. **Isi slot.** Untuk setiap slot di `alur`, pilih klip dan detik `mulai` yang cocok dengan `jenis_shot`, ikuti aturan cerita di bawah. Salin `durasi`, `gerak`, `transisi_masuk`, `efek_masuk`, `efek_keluar`, `redup`, dan grade dari pattern. Salin juga `bingkai` dan `akhir` ke plan, ubah `logo_slot` menjadi `logo_segmen` (indeks segmen slot itu), dan isi `pembuka_segmen` dengan indeks segmen slot teks pertama pattern (`teks[0].slot`), supaya teks pembuka dari GUI muncul di slot itu. Kalau pattern punya `teks[0].durasi`, tulis juga `pembuka_durasi_teks` (nilai number, detik) ke plan — ini memastikan teks pembuka tampil cukup lama agar terbaca. Kalau pattern punya `teks[0].sampai_slot`, tulis juga `pembuka_teks` ke plan: `mulai`, `animasi`, `fade`, `keluar` disalin dari `teks[0]`, dan `sampai_segmen` = indeks segmen slot `sampai_slot`. Jangan salin teks dan logo. Tulis `<folder>/_edit/plan.json` sesuai `SKILL/PLAN.md`, memakai path absolut.
    - **Pattern dengan `bingkai` letterbox:** utamakan klip landscape. Klip portrait dipotong di tengah menjadi pita 16:9; kalau terpaksa dipakai, beri tahu klien.
    - **Pakai ulang klip** boleh bila klip kurang dari jumlah slot: rentang `mulai` dalam klip yang sama berjarak minimal 1 detik, dan tidak di dua segmen berurutan. Render memberi peringatan kalau aturan ini dilanggar.
@@ -93,6 +94,31 @@ Format blok (JSON valid, satu blok per balasan):
 ```
 ````
 
+## Alur: training gaya
+
+Berlaku bila pesan diakhiri `[mode training: ...]` (dikirim dari tab Training gaya di GUI). Tujuannya: uji ulang pattern yang sudah ada terhadap video contohnya, laporkan yang tidak cocok, dan perbaiki pattern atas persetujuan klien. Semua pertanyaan WAJIB lewat blok `pertanyaan` (format di "Alur: revisi setelah hasil").
+
+1. **Input dari pesan GUI:** nama pattern, mode (`ikuti referensi` / `custom`), dan folder klip.
+2. **Bahan.** Baca `SKILL/patterns/<pattern>.json` termasuk `catatan_training`. Video contoh = `skill/contoh-video/<video_contoh>` (folder `contoh-video` di sebelah folder skill). Lembar referensi: pakai `SKILL/_ref/<nama>/` yang sudah ada (cari nama pattern atau nama file `video_contoh` tanpa ekstensi; lihat `filmstrip.jpg`/`shots.jpg`). Kalau tidak ada, jalankan `analyze_ref.py <video contoh> --name <pattern> --out <folder>/_training/<pattern>/ref`.
+3. **Folder kerja = `<folder>/_training/<pattern>/`.** Jangan menyentuh `<folder>/_edit/` atau `<folder>/hasil/`. Tulis `plan.json` di folder kerja dengan `output` di dalam folder itu (mis. `<folder>/_training/<pattern>/uji.mp4`). Klip tetap direview sesuai aturan biasa (render menolak klip tanpa `_review`). Tanpa teks dan logo: jangan tulis `overlay.json` di folder kerja.
+4. **Aturan mode:**
+   - `ikuti`: plan menyalin alur persis (aturan "Mode edit dari GUI"). Kriteria lolos: jumlah shot sama, selisih tiap cut ≤ 0.15 detik, efek/transisi tiap shot cocok, grade mirip, bingkai dan akhir sama.
+   - `custom`: durasi dan jumlah shot bebas, tulis `"mode": "custom"` di plan. Kriteria hanya gaya: grade, jenis transisi, efek, bingkai, akhir.
+5. **Satu putaran:**
+   1. `render.py <plan> --preview`.
+   2. `python3 SKILL/scripts/bandingkan.py <video contoh> <hasil preview> --out <folder kerja>/banding.jpg`.
+   3. Lihat lembar banding (atas contoh, bawah hasil; hitung kolom dengan benar) dan tabel cut.
+   4. Tulis `<folder kerja>/laporan.json`:
+      ```
+      {"pattern": "<nama>", "mode": "ikuti" | "custom", "putaran": 1, "lolos": false,
+       "cek": [{"nama": "Jumlah shot", "contoh": "14", "hasil": "14", "lolos": true, "catatan": ""}, ...],
+       "video": "<path absolut hasil>", "banding": "<path absolut banding.jpg>", "ringkasan": "1-2 kalimat"}
+      ```
+      Nama `cek` (urutan tetap): `Jumlah shot`, `Waktu cut`, `Transisi`, `Efek`, `Grade`, `Bingkai & akhir`. Di mode `custom`, `Jumlah shot` dan `Waktu cut` diberi `"lolos": null` (tidak dinilai). `lolos` total = semua cek yang dinilai lolos.
+6. **Kalau tidak lolos:** pisahkan kesalahan pattern (durasi slot, transisi, efek, grade, bingkai salah dibanding contoh) dari keterbatasan footage (klip kurang, gelap, gerak kamera beda). Pattern hanya diubah untuk kesalahan pattern; keterbatasan footage cukup dilaporkan. Kirim blok `ringkasan` berisi usulan perubahan pattern (1 poin per perubahan), lalu berhenti dan tunggu.
+7. **`Kerjakan sesuai ringkasan.`** = tulis pattern baru lengkap ke file sementara di folder kerja, lalu jalankan `simpan_pattern.py <pattern> <file sementara>` (backup otomatis ke `patterns/_backup/`). Jangan pernah mengedit `patterns/*.json` langsung. Tambahkan pelajaran umum (bukan khusus klip ini) ke field `catatan_training` pattern: array kalimat pendek, tanpa duplikat, maksimal 10 (buang yang paling lama). Lalu ulangi langkah 5 dengan `putaran` + 1. Maksimal 3 putaran per pesan training; setelah itu laporkan hasilnya.
+8. **Kalau lolos:** laporkan singkat (1-2 kalimat). Kalau ada temuan tipis (nyaris gagal), boleh tanya lewat blok `tanya` apakah perlu diperbaiki.
+
 ## Aturan ekstraksi referensi (wajib)
 
 Tujuannya: reel hasil pattern punya struktur yang sama dengan video contoh (waktu tiap cut, transisi, bingkai, efek, grade). Isi gambar tetap dari klip klien.
@@ -103,7 +129,7 @@ Tujuannya: reel hasil pattern punya struktur yang sama dengan video contoh (wakt
 4. **Uji wajib sebelum pattern disimpan.** Render pattern dengan klip apa saja (preview cukup), lalu jalankan `scripts/bandingkan.py <video-contoh> <hasil.mp4>`. Lihat lembar bandingnya (pasangan baris: atas contoh, bawah hasil) dan tabel cut. Perbaiki pattern sampai jumlah shot sama, cut meleset ≤ 0.15 detik, dan efek di tiap shot cocok. Sebutkan hasil uji ini ke pengguna.
 5. **Efek yang belum didukung render** tetap dicatat di pattern sebagai `"belum_didukung": ["..."]` dan WAJIB disebutkan ke pengguna. Jangan diam-diam dilewati atau diganti efek lain.
 
-6. **Bagian cepat dicek per frame (30 fps).** Untuk tiap bagian yang shotnya < 0.4 detik atau ada efek (kotak, kilat, pembuka, logo), ambil strip per frame (`ffmpeg -ss <a> -t <d> -i <video> -vf "fps=30,crop=iw:ih*0.4:0:ih*0.3,scale=90:-2,tile=27x1"`). Filmstrip 4 fps melewatkan urutan klip 0.1-0.2 detik (contoh: urutan kotak bertingkat contoh4 di 11.6-12.77 detik berisi 6-7 klip).
+6. **Bagian cepat dicek per frame (30 fps).** Untuk tiap bagian yang shotnya < 0.4 detik atau ada efek (kotak, kilat, pembuka, logo), ambil strip per frame (`ffmpeg -ss <a> -t <d> -i <video> -vf "fps=30,crop=iw:ih*0.4:0:ih*0.3,scale=90:-2,tile=27x1"`). Filmstrip 4 fps melewatkan urutan klip 0.1-0.2 detik (misalnya urutan kotak bertingkat kurang dari 1.2 detik bisa berisi 6-7 klip).
 7. **Kilat/flash dibuktikan dengan angka.** Sebelum menulis `kilat-putih`, ukur `signalstats` YMAX/YAVG per frame di sekitarnya. Kilat putih = lonjakan YAVG jelas dan YMAX ≥ 235. Tanpa lonjakan, jangan tulis efek kilat.
 8. **Bandingkan tiap shot di lembar banding dengan nomor shot yang benar.** Hitung kolom dari awal baris; salah hitung kolom membuat efek dipasang di slot yang salah.
 
@@ -130,4 +156,4 @@ Kalau `durasi_shot` terlihat salah (ada cut terlewat, atau gerakan kamera terbac
 | Teks panjang di shot 1.5 detik | Tidak sempat terbaca | Teks pendek, atau taruh di shot ≥ 2 detik |
 | Langsung render final | Lambat kalau ternyata salah | Selalu preview dulu |
 | Menilai shot video contoh dari satu frame | Cut tersembunyi dan animasi terlewat, hasil tidak mirip contoh | Lihat `filmstrip.jpg` + `shots.jpg` 3 frame, lalu uji `bandingkan.py` |
-| Mengubah pattern bawaan untuk satu video | Pattern rusak untuk video berikutnya | Ubah di `plan.json`, pattern tetap utuh |
+| Mengubah pattern bawaan untuk satu video | Pattern rusak untuk video berikutnya | Ubah di `plan.json`, pattern tetap utuh. Pattern hanya diubah lewat "Alur: training gaya" |

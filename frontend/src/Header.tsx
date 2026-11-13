@@ -1,13 +1,8 @@
 import { Icon } from './icons'
+import { TABS, type Tab } from './tabs'
 
-export type Tab = 'edit' | 'ref'
 type Check = readonly [string, boolean | undefined]
 type Props = { title: string; logo: string | null; tab: Tab; onTab: (t: Tab) => void; checks: Check[]; loaded: boolean }
-
-const TABS: { id: Tab; label: string; icon: string }[] = [
-  { id: 'edit', label: 'Edit reel', icon: 'film' },
-  { id: 'ref', label: 'Gaya baru', icon: 'layers' },
-]
 
 export default function Header({ title, logo, tab, onTab, checks, loaded }: Props) {
   const allOk = loaded && checks.every(([, ok]) => ok)
@@ -27,9 +22,9 @@ export default function Header({ title, logo, tab, onTab, checks, loaded }: Prop
       </div>
       <nav className="tabs" id="app-tabs" role="tablist">
         {TABS.map((t) => (
-          <button key={t.id} id={`app-tab-${t.id}`} role="tab" aria-selected={tab === t.id}
+          <button key={t.id} id={`app-tab-${t.id}`} role="tab" aria-selected={tab === t.id} aria-label={t.label} title={t.label}
             className={`tab ${tab === t.id ? 'on' : ''}`} onClick={() => onTab(t.id)}>
-            <Icon name={t.icon} size={15} /><span>{t.label}</span>
+            <Icon name={t.icon} size={15} /><span className="tab-full">{t.label}</span><span className="tab-short">{t.short}</span>
           </button>
         ))}
       </nav>

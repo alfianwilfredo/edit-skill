@@ -14,6 +14,7 @@ h1 { font-size: 15px; font-weight: 700; letter-spacing: -.01em; margin: 0; line-
 .tab { display: inline-flex; align-items: center; gap: 6px; min-height: 30px; padding: 4px 12px; border-radius: 8px; border: none; background: transparent; color: var(--muted); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
 .tab:hover { color: var(--text); }
 .tab.on { background: var(--primary); color: var(--on-primary); }
+.tab-short { display: none; }
 
 .status { position: relative; flex: none; }
 .status summary { list-style: none; }
@@ -189,12 +190,19 @@ textarea { resize: vertical; }
   .app { padding: 0 12px; }
   .brand-text { display: none; }
   .tabs { flex: 1; min-width: 0; }
-  .tab { flex: 1; justify-content: center; padding: 4px 8px; }
+  .tab { flex: 1; justify-content: center; padding: 4px 8px; min-width: 0; }
+  .tab-full { display: none; }
+  .tab-short { display: inline; overflow: hidden; text-overflow: ellipsis; }
   .chips { max-width: 40%; }
   .chip { padding: 2px 6px; }
   .card { border-radius: 12px; }
 }
-@media (max-width: 380px) { .tab svg { display: none; } }
+/* layar sempit: tab tidak aktif cukup ikon, tab aktif ikon + label pendek */
+@media (max-width: 440px) {
+  .tab:not(.on) { flex: 0 0 44px; padding: 0; }
+  .tab:not(.on) span { display: none; }
+  .tab.on svg { display: none; }
+}
 
 /* sentuh: 42px */
 @media (max-width: 767px), (pointer: coarse) {
@@ -203,7 +211,8 @@ textarea { resize: vertical; }
   .btn.icon { width: 42px; }
   .btn.ghost { min-height: 36px; }
   .btn.ghost.icon { width: 36px; }
-  .seg button, .pat, .tab { min-height: 38px; }
+  .seg button, .pat { min-height: 38px; }
+  .tab { min-height: 40px; }
   .ph-bar select { min-height: 40px; font-size: 14px; }
   .ov-3 { grid-template-columns: 96px minmax(0, 1fr); }
 }

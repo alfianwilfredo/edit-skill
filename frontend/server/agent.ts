@@ -6,7 +6,7 @@ import { getApiKey, SKILL_DIR } from './paths.ts'
 import { killGroup, type JobCtx } from './job.ts'
 
 export const MODELS = ['claude-sonnet-5-5', 'claude-opus-5-5'] as const
-const SCRIPTS = ['scan_clips.py', 'review_bahan.py', 'analyze_clip.py', 'analyze_ref.py', 'font_match.py', 'render.py']
+const SCRIPTS = ['scan_clips.py', 'review_bahan.py', 'analyze_clip.py', 'analyze_ref.py', 'font_match.py', 'render.py', 'bandingkan.py', 'simpan_pattern.py']
 const MAX_STEPS = 40
 
 export type Event = { kind: 'text' | 'tool'; text: string }
@@ -70,7 +70,7 @@ export function skillPrompt(folder: string, cli = false) {
 
 # Konteks GUI (wajib)
 ${tools}
-${folder ? `- Folder klip klien: ${folder}. Hasil final simpan di ${folder}/hasil/ (buat bila belum ada).` : '- Belum ada folder klip. Jangan render. Kalau butuh klip, minta klien memilih folder di menu Edit reel.'}
+${folder ? `- Folder klip klien: ${folder}. Hasil final simpan di ${folder}/hasil/ (buat bila belum ada), kecuali mode training (pakai ${folder}/_training/).` : '- Belum ada folder klip. Jangan render. Kalau butuh klip, minta klien memilih folder di menu Edit reel.'}
 - Klien orang awam. Tulis bahasa Indonesia sederhana. Jangan minta klien menjalankan perintah apa pun. Jangan tampilkan path panjang kecuali perlu.
 - Ikuti semua aturan mutlak di atas. Tanya klien lalu berhenti dan tunggu jawabannya. Pertanyaan dengan pilihan jawaban (wajib di mode revisi) kirim lewat blok \`\`\`pertanyaan (format di "Alur: revisi setelah hasil"); GUI menampilkannya sebagai tombol.
 - Setiap render: kirim ringkasan singkat + path video final.

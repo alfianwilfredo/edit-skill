@@ -3,11 +3,15 @@ import './App.css'
 import { api } from './api'
 import BahanPanel from './BahanPanel'
 import ChatPanel, { type Msg } from './ChatPanel'
-import Header, { type Tab } from './Header'
+import Header from './Header'
+import { tabAwal, tabHash, type Tab } from './tabs'
 import { Icon } from './icons'
 import Notices from './Notices'
 import PhonePanel from './PhonePanel'
 import RefPanel from './RefPanel'
+import TrainingPanel from './TrainingPanel'
+import TrainingCompare from './TrainingCompare'
+import { useTraining } from './useTraining'
 import { normAudio, type AudioPattern } from './audio'
 import { useFonts, useOverlay, type RefTeks } from './overlay'
 import { useKonfirmasi } from './components/ui/useKonfirmasi'
@@ -30,17 +34,18 @@ const SUGGESTIONS = [
   'Buat versi yang lebih cepat dan ritmis',
   'Ganti teks penutup jadi ajakan DM',
 ]
-const newChats = (): Chats => ({ edit: { id: crypto.randomUUID(), msgs: [] }, ref: { id: crypto.randomUUID(), msgs: [] } })
+const newChat = () => ({ id: crypto.randomUUID(), msgs: [] as Msg[] })
+const newChats = (): Chats => ({ edit: newChat(), ref: newChat(), training: newChat() })
 
 export default function App() {
-  const [tab, setTab] = useState<Tab>(location.hash === '#gaya-baru' || load('ir_tab', 'edit') === 'ref' ? 'ref' : 'edit')
+  const [tab, setTab] = useState<Tab>(tabAwal)
   const [pane, setPane] = useState<Pane>('atur')
   const [status, setStatus] = useState<Status | null>(null)
   const [folder, setFolder] = useState(load('ir_folder', ''))
   const [patternId, setPatternId] = useState(load('ir_pattern', ''))
   const [model, setModel] = useState(load('ir_model', 'claude-sonnet-5-5'))
   const [chats, setChats] = useState<Chats>(newChats)
-  const [inputs, setInputs] = useState<Record<Tab, string>>({ edit: '', ref: '' })
+  const [inputs, setInputs] = useState<Record<Tab, string>>({ edit: '', ref: '', training: '' })
   const [sending, setSending] = useState(false) // jeda antara POST dan job terdaftar
   const [kartuTutup, setKartuTutup] = useState<string | null>(null) // id job yang kartunya disembunyikan
   const [error, setError] = useState('')
@@ -66,9 +71,10 @@ export default function App() {
   useEffect(() => { save('ir_folder', folder); loadVideos().then((v) => { jejakRef.current = jejak(v) }) }, [folder]) // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { save('ir_pattern', patternId) }, [patternId])
   useEffect(() => { save('ir_model', model) }, [model])
-  useEffect(() => { save('ir_tab', tab) }, [tab])
+  useEffect(() => { save('ir_tab', tab); history.replaceState(null, '', tabHash(tab)) }, [tab])
 
   const pattern = status?.patterns.find((p) => p.id === patternId)
+  const tr = useTraining(folder, status?.patterns ?? [], patternId)
   const konfirmasi = useKonfirmasi()
   const [fokus, setFokus] = useState<{ teks: number | null; n: number } | null>(null)
   const rf = useReferensi({
@@ -88,7 +94,6 @@ export default function App() {
     setTab(t)
     setPane('atur')
     setError('')
-    history.replaceState(null, '', t === 'ref' ? '#gaya-baru' : location.pathname)
   }
   const push = (t: Tab, m: Msg[]) => setChats((c) => ({ ...c, [t]: { ...c[t], msgs: [...c[t].msgs, ...m] } }))
   const job = useJob({
@@ -96,6 +101,7 @@ export default function App() {
     onEnd: (j) => {
       done()
       ov.reload() // asisten bisa mengubah overlay.json lewat chat
+      if (j.tab === 'training') tr.reload() // render uji & laporan baru
       if (j.status === 'selesai' && j.jenis === 'render' && bp !== 'desk') setPane('hasil')
     },
   })
@@ -122,7 +128,7 @@ export default function App() {
   // t ditentukan pemanggil supaya pesan dari menu Gaya baru tidak masuk ke chat Edit reel.
   async function send(text: string, t: Tab, jenis: JobView['jenis'] = 'chat') {
     if (!text.trim() || busy || isSubmittingRef.current) return
-    if (t === 'edit' && !folder) return setError('Pilih folder klip dulu.')
+    if (t !== 'ref' && !folder) return setError('Pilih folder klip dulu.')
     isSubmittingRef.current = true
     setError('')
     if (bp === 'mob') setPane('chat')
@@ -168,6 +174,14 @@ export default function App() {
     onNew: () => { setChats((c) => ({ ...c, [t]: { id: crypto.randomUUID(), msgs: [] } })); setKartuTutup(job.job?.id ?? null) },
     progress: kartu(t),
   })
+  // Kartu pertanyaan asisten (```pertanyaan) untuk tab Edit reel & Training gaya.
+  function jawabGrill(t: Tab, i: number, j: GrillJawaban, text: string) {
+    if (busy || !folder) return send(text, t) // send menampilkan error, jawaban tidak disimpan
+    const cid = chats[t].id
+    setGrillJawab((g) => ({ ...g, [cid]: { ...g[cid], [i]: j } }))
+    send(text, t)
+  }
+  const startTraining = () => tr.pattern && send(`Training gaya "${tr.pattern.name}" mode ${tr.mode === 'ikuti' ? 'ikuti referensi' : 'custom'}. Klip uji dari folder klip. Ikuti "Alur: training gaya".`, 'training')
   // Kartu tampil saat job tab ini jalan; hasil terakhir (gagal/batal, atau selesai bila ada tahap) tetap sampai kirim berikutnya.
   function kartu(t: Tab) {
     const j = job.job
@@ -212,29 +226,33 @@ export default function App() {
       ) : (
         <main className={`layout bp-${bp}`}>
           <div className="pane-atur" hidden={!show('atur')}>
-            <BahanPanel folder={folder} onPick={pickFolder} patterns={status?.patterns ?? []} patternId={patternId}
+            {tab === 'training' ? (
+              <TrainingPanel folder={folder} onPick={pickFolder} patterns={status?.patterns ?? []} patternId={tr.pattern?.id ?? ''}
+                setPatternId={tr.setPattern} mode={tr.mode} setMode={tr.setMode} model={model} setModel={setModel}
+                onStart={startTraining} disabled={busy || !ready || !folder || !tr.pattern} />
+            ) : <BahanPanel folder={folder} onPick={pickFolder} patterns={status?.patterns ?? []} patternId={patternId}
               setPatternId={setPatternId} onNewPattern={() => switchTab('ref')} model={model} setModel={setModel}
-              mode={rf.mode} setMode={rf.setMode} onApplyKlip={(text) => send(text, 'edit')} applyDisabled={busy || !ready} />
+              mode={rf.mode} setMode={rf.setMode} onApplyKlip={(text) => send(text, 'edit')} applyDisabled={busy || !ready} />}
           </div>
           {bp === 'tab' && (
             <div className="pane-tabs seg" role="tablist">
               {(['chat', 'hasil'] as const).map((p) => (
                 <button key={p} id={`pane-tab-${p}`} role="tab" aria-selected={show(p)} className={show(p) ? 'on' : ''}
-                  onClick={() => setPane(p)}>{p === 'chat' ? 'Chat' : 'Hasil & teks'}</button>
+                  onClick={() => setPane(p)}>{p === 'chat' ? 'Chat' : tab === 'training' ? 'Hasil uji' : 'Hasil & teks'}</button>
               ))}
             </div>
           )}
           <div className="pane-chat" hidden={!show('chat')}>
-            <ChatPanel {...chatProps('edit')} onSend={(text) => send(text, 'edit')}
-              grill={{
-                jawaban: grillJawab[chats.edit.id] ?? {},
-                onAnswer: (i, j, text) => {
-                  if (busy || !folder) return send(text, 'edit') // send menampilkan error, jawaban tidak disimpan
-                  const cid = chats.edit.id
-                  setGrillJawab((g) => ({ ...g, [cid]: { ...g[cid], [i]: j } }))
-                  send(text, 'edit')
-                },
-              }} placeholder="Tulis pesan, mis: shot kedua kurang bagus, ganti dengan klip dapur"
+            {tab === 'training' ? (
+              <ChatPanel {...chatProps('training')} onSend={(text) => send(text, 'training')} grill={{ jawaban: grillJawab[chats.training.id] ?? {}, onAnswer: (i, j, text) => jawabGrill('training', i, j, text) }}
+                placeholder="Tanya atau koreksi, mis: transisi shot 3 harusnya fade"
+                empty={<>
+                  <span className="empty-icon"><Icon name="check" size={24} /></span>
+                  <h3>Latih gaya sampai mirip contoh</h3>
+                  <p>Pilih gaya dan cara menilai, lalu tekan <strong>Mulai training</strong>. Asisten merender uji, membandingkan dengan video contoh, dan mengusulkan perbaikan di sini.</p>
+                </>} />
+            ) : <ChatPanel {...chatProps('edit')} onSend={(text) => send(text, 'edit')}
+              grill={{ jawaban: grillJawab[chats.edit.id] ?? {}, onAnswer: (i, j, text) => jawabGrill('edit', i, j, text) }} placeholder="Tulis pesan, mis: shot kedua kurang bagus, ganti dengan klip dapur"
               empty={<>
                 <span className="empty-icon"><Icon name="film" size={24} /></span>
                 <h3>Siap mengedit reel</h3>
@@ -256,12 +274,12 @@ export default function App() {
                   title={ov.hasPlan ? 'Render ulang hanya teks, logo & audio' : 'Mulai edit dulu sampai ada plan'}>
                   <Icon name="check" size={14} />Terapkan teks, logo & audio
                 </button>
-              </>} />
+              </>} />}
           </div>
           <div className="pane-hasil" hidden={!show('hasil')}>
-            <PhonePanel videos={videos} tick={tick} onRefresh={() => loadVideos()} overlay={ov.overlay} onOverlay={ov.update}
+            {tab === 'training' ? <TrainingCompare data={tr.data} error={tr.error} folder={folder} /> : <PhonePanel videos={videos} tick={tick} onRefresh={() => loadVideos()} overlay={ov.overlay} onOverlay={ov.update}
               fonts={fonts} slot={pattern?.slot ?? 0} logoSrc={{ hitam: status?.logo ?? null, putih: status?.logoPutih ?? null }} pattern={pattern}
-              aturan={rf.ref ? { ref: rf.ref, konfirmTanpaLogo: rf.konfirmTanpaLogo } : undefined} fokus={fokus} />
+              aturan={rf.ref ? { ref: rf.ref, konfirmTanpaLogo: rf.konfirmTanpaLogo } : undefined} fokus={fokus} />}
           </div>
         </main>
       )}

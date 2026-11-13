@@ -11,7 +11,7 @@ type TahapStatus = 'belum' | 'jalan' | 'selesai' | 'cache' | 'gagal'
 type Tahap = { id: string; nama: string; bobot: number; status: TahapStatus }
 type JobStatus = 'jalan' | 'selesai' | 'gagal' | 'batal'
 export type Jenis = 'edit' | 'render' | 'chat'
-export type Tab = 'edit' | 'ref'
+export type Tab = 'edit' | 'ref' | 'training'
 
 // Dioper ke runScript / runTurn / runTurnCli: env berisi PROGRES_FILE, signal untuk batal.
 export type JobCtx = {

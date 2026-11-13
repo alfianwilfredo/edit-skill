@@ -9,6 +9,7 @@ import { cliAvailable, runTurnCli } from './cli.ts'
 import { CONTOH_DIR, getApiKey, getEngine, setApiKey, SKILL_DIR } from './paths.ts'
 import { body, editDir, fileUrl, json, type Route } from './http.ts'
 import { klipRoutes, salinVideoContoh } from './klip.ts'
+import { trainingRoutes } from './training.ts'
 import { batalJob, jobBerjalan, startJob, viewJob, type Jenis, type Tab } from './job.ts'
 
 const sessions = new Map<string, Session>()
@@ -59,6 +60,7 @@ function patterns() {
 
 const routes: Record<string, Route> = {
   ...klipRoutes,
+  ...trainingRoutes,
 
   'GET /status': async (_req, res) => {
     json(res, 200, {
@@ -286,10 +288,12 @@ const routes: Record<string, Route> = {
     const session = sessions.get(sessionId)!
     session.folder = folder || ''
     const j: Jenis = jenis === 'edit' || jenis === 'render' ? jenis : 'chat'
-    const t: Tab = tab === 'ref' ? 'ref' : 'edit'
+    const t: Tab = tab === 'ref' || tab === 'training' ? tab : 'edit'
     // Pesan chat biasa setelah hasil ada = revisi: asisten wajib tanya dulu lewat kartu pilihan (SKILL.md "Alur: revisi").
     const revisi = t === 'edit' && j === 'chat' && !!session.folder && existsSync(path.join(session.folder, '_edit', 'plan.json'))
-    const msg = revisi ? `${String(message)}\n\n[mode revisi: ikuti "Alur: revisi setelah hasil" di SKILL.md]` : String(message)
+    // Tab Training gaya: uji ulang pattern terhadap video contohnya (SKILL.md "Alur: training gaya").
+    const msg = revisi ? `${String(message)}\n\n[mode revisi: ikuti "Alur: revisi setelah hasil" di SKILL.md]`
+      : t === 'training' ? `${String(message)}\n\n[mode training: ikuti "Alur: training gaya" di SKILL.md]` : String(message)
     const jobId = startJob(j, t, (ctx) => getEngine() === 'cli'
       ? runTurnCli(session, sessionId, model, msg, skillPrompt(session.folder, true), ctx)
       : runTurn(session, model, msg, ctx))
