@@ -277,7 +277,7 @@ export default function App() {
               </>} />}
           </div>
           <div className="pane-hasil" hidden={!show('hasil')}>
-            {tab === 'training' ? <TrainingCompare data={tr.data} error={tr.error} folder={folder} /> : <PhonePanel videos={videos} tick={tick} onRefresh={() => loadVideos()} overlay={ov.overlay} onOverlay={ov.update}
+            {tab === 'training' ? <TrainingCompare data={tr.data} error={tr.error} folder={folder} onReload={tr.reload} /> : <PhonePanel videos={videos} tick={tick} onRefresh={() => loadVideos()} overlay={ov.overlay} onOverlay={ov.update}
               fonts={fonts} slot={pattern?.slot ?? 0} logoSrc={{ hitam: status?.logo ?? null, putih: status?.logoPutih ?? null }} pattern={pattern}
               aturan={rf.ref ? { ref: rf.ref, konfirmTanpaLogo: rf.konfirmTanpaLogo } : undefined} fokus={fokus} />}
           </div>

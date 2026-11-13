@@ -42,3 +42,5 @@
   .training-compare-head .btn { min-height: 42px; }
   .training-panel .seg button, .training-panel .pat { min-height: 42px; }
 }
+
+.training-compare-aksi { display: flex; align-items: center; gap: 6px; flex: none; }

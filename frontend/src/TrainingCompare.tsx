@@ -4,12 +4,12 @@ import { Dialog } from './components/ui/Dialog'
 import type { Cek, TrainingData } from './useTraining'
 import './training.css'
 
-type Props = { data: TrainingData | null; error: string; folder: string }
+type Props = { data: TrainingData | null; error: string; folder: string; onReload: () => void }
 
 const status = (c: Cek) => (c.lolos === true ? '✓ Sesuai' : c.lolos === false ? '✗ Beda' : 'Tidak dinilai')
 
 // Panel kanan tab Training gaya: video contoh vs hasil uji, lalu laporan penilaian.
-export default function TrainingCompare({ data, error, folder }: Props) {
+export default function TrainingCompare({ data, error, folder, onReload }: Props) {
   const refV = useRef<HTMLVideoElement>(null)
   const ujiV = useRef<HTMLVideoElement>(null)
   const [main, setMain] = useState<Record<string, boolean>>({}) // video yang sedang diputar
@@ -38,9 +38,15 @@ export default function TrainingCompare({ data, error, folder }: Props) {
     <section className="card training-compare" id="training-compare">
       <div className="sec-head training-compare-head">
         <h2>Bandingkan</h2>
-        <button id="training-btn-play-both" className="btn" disabled={!data?.ref || !data?.video} onClick={bersamaan}>
-          <Icon name="play" size={14} />{Object.values(main).some(Boolean) ? 'Jeda keduanya' : 'Putar bersamaan'}
-        </button>
+        <span className="training-compare-aksi">
+          <button id="training-btn-play-both" className="btn" disabled={!data?.ref || !data?.video} onClick={bersamaan}>
+            <Icon name="play" size={14} />{Object.values(main).some(Boolean) ? 'Jeda keduanya' : 'Putar bersamaan'}
+          </button>
+          {/* Hasil bisa selesai saat GUI tidak memantau (mis. server di-restart di tengah training). */}
+          <button id="training-btn-refresh" className="btn ghost icon" onClick={onReload} aria-label="Muat ulang hasil" title="Muat ulang hasil">
+            <Icon name="refresh" size={16} />
+          </button>
+        </span>
       </div>
       <div className="tr-vids">
         {vid('ref', 'Video contoh', data?.ref, refV, 'Gaya ini belum punya video contoh.')}
