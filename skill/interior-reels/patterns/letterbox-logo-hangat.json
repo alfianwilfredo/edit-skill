@@ -1,0 +1,338 @@
+{
+  "name": "letterbox-logo-hangat",
+  "deskripsi": "Montase proses kerja sinematik di dalam bingkai letterbox 16:9 (bar hitam atas-bawah). Pembuka: gambar muncul per potongan vertikal, lalu shot material dengan judul, meredup ke hitam dengan logo, blur horizontal masuk ke proses. Lalu ritme cut cepat 0.5-1.5 detik: alat, tangan, mesin, pola. Di tengah ada urutan kotak di layar hitam: tiap ~0.2 detik klip baru dengan kotak lebih besar, lalu kembali penuh. Akhir memudar ke hitam. Grade hangat keemasan, saturasi sedikit turun.",
+  "cocok_untuk": "Studio interior, furnitur, tailor, upholstery, atau kerajinan yang ingin kesan sinematik: proses kerja, material, dan tangan. Butuh 9-12 klip landscape (klip dipakai ulang di momen berbeda); klip portrait terpotong banyak di bingkai letterbox.",
+  "sumber": "contoh4.mp4 (28 shot terdeteksi, 22.64 detik; cut dari analyze_ref dengan crop letterbox, dicek di filmstrip 4 fps dan 3 frame per shot. Shot 1-3 = animasi panel pembuka digabung jadi 1 slot; shot 5-8 = sekuens logo/blur digabung jadi 2 slot; 11.60-12.77 = urutan kotak bertingkat 6-7 klip (dibuat 6 slot), dicek per frame 30 fps)",
+  "durasi_total": 22.64,
+  "min_klip": 7,
+  "ideal_klip": [
+    9,
+    12
+  ],
+  "audio_panduan": "patterns/audio/letterbox-logo-hangat.m4a",
+  "sinkron": "2beat",
+  "alur": [
+    {
+      "slot": "pembuka",
+      "jenis_shot": "detail kerja/material, dibuka per potongan vertikal dari kiri",
+      "durasi": 1.3,
+      "gerak": "diam",
+      "transisi_masuk": null,
+      "efek_masuk": {
+        "jenis": "potong-vertikal",
+        "durasi": 1.0
+      }
+    },
+    {
+      "slot": "material",
+      "jenis_shot": "medium top-down material atau meja kerja (swatch, sampel), area tengah lega untuk judul",
+      "durasi": 2.05,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "dissolve",
+        "durasi": 0.3
+      }
+    },
+    {
+      "slot": "logo",
+      "jenis_shot": "klip material yang sama, diredupkan hampir hitam; logo klien tampil di sini",
+      "durasi": 0.53,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "fadeblack",
+        "durasi": 0.25
+      },
+      "redup": 0.85,
+      "pakai_ulang": "material"
+    },
+    {
+      "slot": "blur-sambung",
+      "jenis_shot": "klip material lagi, sekilas, disambung blur horizontal",
+      "durasi": 0.27,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "hblur",
+        "durasi": 0.2
+      },
+      "pakai_ulang": "material"
+    },
+    {
+      "slot": "proses-1",
+      "jenis_shot": "close-up alat memotong/membentuk material, tangan terlihat",
+      "durasi": 1.78,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "hblur",
+        "durasi": 0.2
+      }
+    },
+    {
+      "slot": "proses-2",
+      "jenis_shot": "close-up proses gelap/dramatis (mesin, alat)",
+      "durasi": 0.6,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "detail-1",
+      "jenis_shot": "detail bentuk material atau benda (lengkung, lipatan)",
+      "durasi": 0.9,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "orang-1",
+      "jenis_shot": "tangan/orang memegang atau merapikan material",
+      "durasi": 1.54,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "proses-3",
+      "jenis_shot": "tangan menggambar/mengukur pola di meja",
+      "durasi": 1.06,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "proses-4",
+      "jenis_shot": "close-up mesin/alat kerja dengan tangan",
+      "durasi": 0.94,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "detail-2",
+      "jenis_shot": "detail alat ukur atau aksesori, agak gelap",
+      "durasi": 0.63,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "kotak-1",
+      "jenis_shot": "shot apa saja (klip berbeda tiap kotak), kotak di tengah layar hitam; tiap shot kotak lebih besar",
+      "durasi": 0.2,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      },
+      "efek_masuk": {
+        "jenis": "kotak-membesar",
+        "durasi": 3.0,
+        "dari": 0.25
+      }
+    },
+    {
+      "slot": "kotak-2",
+      "jenis_shot": "shot apa saja (klip berbeda tiap kotak), kotak di tengah layar hitam; tiap shot kotak lebih besar",
+      "durasi": 0.19,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      },
+      "efek_masuk": {
+        "jenis": "kotak-membesar",
+        "durasi": 3.0,
+        "dari": 0.33
+      }
+    },
+    {
+      "slot": "kotak-3",
+      "jenis_shot": "shot apa saja (klip berbeda tiap kotak), kotak di tengah layar hitam; tiap shot kotak lebih besar",
+      "durasi": 0.2,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      },
+      "efek_masuk": {
+        "jenis": "kotak-membesar",
+        "durasi": 3.0,
+        "dari": 0.42
+      }
+    },
+    {
+      "slot": "kotak-4",
+      "jenis_shot": "shot apa saja (klip berbeda tiap kotak), kotak di tengah layar hitam; tiap shot kotak lebih besar",
+      "durasi": 0.19,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      },
+      "efek_masuk": {
+        "jenis": "kotak-membesar",
+        "durasi": 3.0,
+        "dari": 0.52
+      }
+    },
+    {
+      "slot": "kotak-5",
+      "jenis_shot": "shot apa saja (klip berbeda tiap kotak), kotak di tengah layar hitam; tiap shot kotak lebih besar",
+      "durasi": 0.2,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      },
+      "efek_masuk": {
+        "jenis": "kotak-membesar",
+        "durasi": 3.0,
+        "dari": 0.65
+      }
+    },
+    {
+      "slot": "kotak-6",
+      "jenis_shot": "shot apa saja (klip berbeda tiap kotak), kotak di tengah layar hitam; tiap shot kotak lebih besar",
+      "durasi": 0.19,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      },
+      "efek_masuk": {
+        "jenis": "kotak-membesar",
+        "durasi": 3.0,
+        "dari": 0.85
+      }
+    },
+    {
+      "slot": "penuh-1",
+      "jenis_shot": "close-up proses terang, penuh di bingkai (sesudah urutan kotak)",
+      "durasi": 0.86,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "detail-3",
+      "jenis_shot": "close-up mesin/alat dengan tangan",
+      "durasi": 0.47,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "ritme-1",
+      "jenis_shot": "close-up proses (mesin, alat)",
+      "durasi": 0.97,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "ritme-2",
+      "jenis_shot": "tangan menggambar/menulis/mengukur",
+      "durasi": 0.93,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "ritme-3",
+      "jenis_shot": "tangan memilih material/sampel",
+      "durasi": 0.8,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "ritme-4",
+      "jenis_shot": "close-up alat potong, cahaya hangat",
+      "durasi": 0.87,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "ritme-5",
+      "jenis_shot": "proses gelap/dramatis",
+      "durasi": 0.93,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "ritme-6",
+      "jenis_shot": "orang bekerja, medium",
+      "durasi": 0.7,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "ritme-7",
+      "jenis_shot": "detail meja kerja dengan alat",
+      "durasi": 0.97,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "ritme-8",
+      "jenis_shot": "close-up alat potong/material",
+      "durasi": 0.83,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "penutup",
+      "jenis_shot": "detail proses terakhir, memudar ke hitam",
+      "durasi": 1.54,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    }
+  ],
+  "teks": [
+    {
+      "slot": "material",
+      "gaya": "judul",
+      "animasi": "fade",
+      "mulai": 0.2,
+      "durasi": 3.0,
+      "latar": true,
+      "warna": "#B0202B",
+      "contoh_isi": "STUDIO\nHERITAGE"
+    }
+  ],
+  "grade": {
+    "kontras": 1.05,
+    "saturasi": 0.9,
+    "terang": -0.05,
+    "hangat": 0.3
+  },
+  "bingkai": {
+    "jenis": "letterbox",
+    "rasio": 1.78
+  },
+  "akhir": {
+    "fade": 0.8
+  },
+  "logo_slot": "logo",
+  "belum_didukung": [
+    "pembuka contoh berisi 2-3 klip berbeda dalam panel vertikal; render memakai satu klip yang dibuka per potongan",
+    "kilatan cahaya oranye (light leak) di slot ritme-4",
+    "sekuens logo contoh berkedip cepat (gelap-terang) ~0.8 detik; render memakai redup + blur"
+  ]
+}

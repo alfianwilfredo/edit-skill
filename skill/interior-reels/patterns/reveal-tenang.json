@@ -1,0 +1,105 @@
+{
+  "name": "reveal-tenang",
+  "deskripsi": "Tempo pelan dan elegan. Crossfade panjang, gerak zoom halus, satu judul di awal dan CTA di akhir.",
+  "cocok_untuk": "Proyek selesai yang ingin ditampilkan mewah dan tenang: rumah tinggal, kamar tidur, ruang keluarga. Butuh 5-8 klip.",
+  "sumber": "pattern bawaan",
+  "durasi_total": 14.4,
+  "min_klip": 5,
+  "ideal_klip": [
+    5,
+    8
+  ],
+  "sinkron": "2beat",
+  "alur": [
+    {
+      "slot": "pembuka",
+      "jenis_shot": "wide ruangan paling kuat, terang, komposisi rapi",
+      "durasi": 2.8,
+      "gerak": "zoom-in",
+      "transisi_masuk": null
+    },
+    {
+      "slot": "suasana",
+      "jenis_shot": "wide/medium area lain atau sudut berbeda",
+      "durasi": 2.2,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "fade",
+        "durasi": 0.6
+      }
+    },
+    {
+      "slot": "detail-1",
+      "jenis_shot": "close-up material atau tekstur (kayu, batu, kain)",
+      "durasi": 1.6,
+      "gerak": "zoom-in",
+      "transisi_masuk": {
+        "jenis": "fade",
+        "durasi": 0.5
+      }
+    },
+    {
+      "slot": "detail-2",
+      "jenis_shot": "close-up dekor, lampu, atau furnitur",
+      "durasi": 1.6,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "fade",
+        "durasi": 0.5
+      }
+    },
+    {
+      "slot": "reveal",
+      "jenis_shot": "walk-through atau pan yang memperlihatkan ruang utuh",
+      "durasi": 3.2,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "smoothleft",
+        "durasi": 0.6
+      }
+    },
+    {
+      "slot": "penutup",
+      "jenis_shot": "shot paling cantik dengan area tenang untuk teks",
+      "durasi": 3.0,
+      "gerak": "zoom-out",
+      "transisi_masuk": {
+        "jenis": "fade",
+        "durasi": 0.6
+      }
+    }
+  ],
+  "teks": [
+    {
+      "slot": "pembuka",
+      "gaya": "judul",
+      "animasi": "fade-naik",
+      "mulai": 0.4,
+      "contoh_isi": "Nama Proyek\nLokasi"
+    },
+    {
+      "slot": "detail-1",
+      "gaya": "label",
+      "animasi": "fade",
+      "contoh_isi": "Nama material"
+    },
+    {
+      "slot": "penutup",
+      "gaya": "cta",
+      "animasi": "fade-naik",
+      "mulai": 0.5,
+      "contoh_isi": "DM untuk konsultasi"
+    }
+  ],
+  "logo": {
+    "slot": "penutup",
+    "posisi": "bawah",
+    "ukuran": 0.32
+  },
+  "grade": {
+    "kontras": 1.04,
+    "saturasi": 0.92,
+    "terang": 0.01,
+    "hangat": 0.12
+  }
+}

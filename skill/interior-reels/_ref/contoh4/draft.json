@@ -1,0 +1,18 @@
+{
+  "name": "letterbox-logo-hangat",
+  "deskripsi": "Pembuka logo sinematik. Shot pertama swatch kain dengan logo merah di tengah, lalu layar meredup ke gelap (logo bertahan ~0.5 detik), disambung blur horizontal ke shot pemotongan kain. Frame memakai letterbox (bar hitam atas dan bawah). Sisa video satu shot panjang lambat pemotongan kain. Grade hangat keemasan, saturasi sedikit turun, kontras sedikit naik.",
+  "cocok_untuk": "Brand fashion, tailor, atau studio bahan dan kerajinan yang ingin kesan sinematik dan mewah. Butuh 2-3 klip: satu shot material (swatch atau meja kerja), satu shot logo atau gelap, dan satu shot panjang aktivitas tangan dengan alat (gunting, pisau, jarum). Shot panjang cocok untuk voice over atau musik pelan.",
+  "sumber": "contoh4.mp4 (6 shot, 22.64 detik; cut dari scene detector ffmpeg; 3.35-4.15 detik berisi 4 transisi bertahap ~0.2 detik, perkiraan; shot terakhir 18.49 detik mungkin menyimpan cut yang tidak terdeteksi)",
+  "durasi_total": 22.64,
+  "alur": [
+    {"slot": "pembuka", "jenis_shot": "medium top-down swatch kain berwarna di meja kerja, tangan dengan jam tangan ikut terlihat, letterbox", "durasi": 3.35, "gerak": "diam", "transisi_masuk": null},
+    {"slot": "logo", "jenis_shot": "layar gelap dengan logo merah di tengah, bertahan sebentar sebelum shot berikutnya", "durasi": 0.53, "gerak": "diam", "transisi_masuk": {"jenis": "fadeblack", "durasi": 0.4}},
+    {"slot": "blur-sambung", "jenis_shot": "swatch kain dalam blur gerak horizontal, transisi ke shot pemotongan", "durasi": 0.14, "gerak": "diam", "transisi_masuk": {"jenis": "hblur", "durasi": 0.3}},
+    {"slot": "potong-1", "jenis_shot": "close-up gunting di atas kain krem di meja, tangan di tepi frame", "durasi": 0.13, "gerak": "diam", "transisi_masuk": {"jenis": "cut"}},
+    {"slot": "potong-utama", "jenis_shot": "medium panjang tangan menggunting kain kuning di atas meja, gerak pelan, letterbox", "durasi": 18.49, "gerak": "diam", "transisi_masuk": {"jenis": "cut"}}
+  ],
+  "teks": [
+    {"slot": "pembuka", "gaya": "judul", "animasi": "fade", "mulai": 0.2, "durasi": 3.0, "latar": true, "warna": "#B0202B", "contoh_isi": "STUDIO\nHERITAGE"}
+  ],
+  "grade": {"kontras": 1.05, "saturasi": 0.9, "terang": -0.05, "hangat": 0.3}
+}

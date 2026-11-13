@@ -1,0 +1,35 @@
+/* Kartu pertanyaan asisten (GrillCard) di dalam thread chat. */
+.grill { align-self: stretch; max-width: 620px; width: 100%; min-width: 0; padding: 12px 14px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); display: flex; flex-direction: column; gap: 12px; animation: chat-rise .2s ease-out; }
+.grill.done { background: var(--surface-2); }
+.grill-judul { font-size: 13px; }
+.grill-ringkas { margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
+.grill-q { margin: 0; padding: 0; border: 0; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.grill-q legend { padding: 0; margin-bottom: 6px; font-size: 13px; font-weight: 600; line-height: 1.4; overflow-wrap: anywhere; }
+.grill-q legend small { font-weight: 400; color: var(--muted); }
+.grill-opsi { display: flex; flex-wrap: wrap; gap: 6px; min-width: 0; }
+.grill-opt { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; min-height: 36px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font: inherit; font-size: 13px; line-height: 1.35; text-align: left; cursor: pointer; transition: border-color .15s, background .15s; }
+.grill-opt span { overflow-wrap: anywhere; }
+.grill-opt:hover:not(:disabled) { border-color: var(--accent); }
+.grill-opt i { flex: none; width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid var(--border-strong); }
+.grill-opt.multi i { border-radius: 4px; }
+.grill-opt.on { border-color: var(--accent); background: var(--accent-soft); }
+.grill-opt.on i { border-color: var(--accent); background: var(--accent); box-shadow: inset 0 0 0 2px var(--surface); }
+.grill-opt em { flex: none; font-style: normal; font-size: 10.5px; font-weight: 600; padding: 1px 7px; border-radius: 999px; background: var(--warn-bg); color: var(--warn-text); }
+.grill-opt.lain { color: var(--muted); border-style: dashed; }
+.grill-opt.lain.on { color: var(--text); }
+.grill-opt:disabled { cursor: default; }
+.grill.done .grill-opt:not(.on) { opacity: .5; }
+.grill:not(.done) .grill-q:disabled .grill-opt { opacity: .6; }
+.grill-lain { width: 100%; min-width: 0; min-height: 36px; padding: 7px 11px; font-size: 13px; border-radius: 9px; }
+.grill-status { font-size: 12px; color: var(--muted); }
+.grill-aksi { display: flex; flex-wrap: wrap; gap: 8px; }
+
+@media (max-width: 767px), (pointer: coarse) {
+  .grill-opt, .grill-lain, .grill-aksi .btn { min-height: 42px; }
+  .grill-lain { font-size: 16px; /* cegah zoom iOS */ }
+}
+@media (max-width: 480px) {
+  .grill { padding: 12px; }
+  .grill-aksi .btn { flex: 1 1 140px; }
+}
+@media (prefers-reduced-motion: reduce) { .grill { animation: none; } }

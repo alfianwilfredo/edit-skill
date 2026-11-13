@@ -72,7 +72,7 @@ export function skillPrompt(folder: string, cli = false) {
 ${tools}
 ${folder ? `- Folder klip klien: ${folder}. Hasil final simpan di ${folder}/hasil/ (buat bila belum ada).` : '- Belum ada folder klip. Jangan render. Kalau butuh klip, minta klien memilih folder di menu Edit reel.'}
 - Klien orang awam. Tulis bahasa Indonesia sederhana. Jangan minta klien menjalankan perintah apa pun. Jangan tampilkan path panjang kecuali perlu.
-- Ikuti semua aturan mutlak di atas. Tanya klien lewat pesan biasa, lalu berhenti dan tunggu jawabannya.
+- Ikuti semua aturan mutlak di atas. Tanya klien lalu berhenti dan tunggu jawabannya. Pertanyaan dengan pilihan jawaban (wajib di mode revisi) kirim lewat blok \`\`\`pertanyaan (format di "Alur: revisi setelah hasil"); GUI menampilkannya sebagai tombol.
 - Setiap render: kirim ringkasan singkat + path video final.
 `
 }

@@ -300,9 +300,12 @@ const routes: Record<string, (req: IncomingMessage, res: ServerResponse, url: UR
     session.folder = folder || ''
     const j: Jenis = jenis === 'edit' || jenis === 'render' ? jenis : 'chat'
     const t: Tab = tab === 'ref' ? 'ref' : 'edit'
+    // Pesan chat biasa setelah hasil ada = revisi: asisten wajib tanya dulu lewat kartu pilihan (SKILL.md "Alur: revisi").
+    const revisi = t === 'edit' && j === 'chat' && !!session.folder && existsSync(path.join(session.folder, '_edit', 'plan.json'))
+    const msg = revisi ? `${String(message)}\n\n[mode revisi: ikuti "Alur: revisi setelah hasil" di SKILL.md]` : String(message)
     const jobId = startJob(j, t, (ctx) => getEngine() === 'cli'
-      ? runTurnCli(session, sessionId, model, String(message), skillPrompt(session.folder, true), ctx)
-      : runTurn(session, model, String(message), ctx))
+      ? runTurnCli(session, sessionId, model, msg, skillPrompt(session.folder, true), ctx)
+      : runTurn(session, model, msg, ctx))
     if (!jobId) return json(res, 409, { error: 'Masih ada proses berjalan.' })
     json(res, 202, { jobId })
   },

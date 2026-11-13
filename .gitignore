@@ -1,6 +1,3 @@
-# Ignore folder skill
-skill/
-
 # OS and Editor
 .DS_Store
 Thumbs.db
@@ -17,3 +14,20 @@ frontend/.env
 frontend/.env.*
 *.local
 *.log
+
+# Python cache & temp
+__pycache__/
+*.py[cod]
+*.trf
+
+# Skill raw footage, rendered videos & cache
+skill/bahan/
+skill/result/
+**/hasil/
+**/_scan/
+**/_review/
+**/_kualitas/
+**/_edit/
+**/_stabil/
+*.MOV
+*.mov

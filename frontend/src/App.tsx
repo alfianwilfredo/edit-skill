@@ -16,6 +16,7 @@ import { useBreakpoint } from './useBreakpoint'
 import { useJob, type JobView } from './useJob'
 import ProgressCard from './components/ui/ProgressCard'
 import { load, msgOf, save } from './util'
+import type { GrillJawaban } from './grill'
 
 type Pattern = { id: string; name: string; deskripsi: string; durasi: number | null; slot?: number; minKlip?: number | null; idealKlip?: [number, number] | null; teks?: RefTeks[]; logoSlot?: number | null } & AudioPattern
 type Status = { engine: 'cli' | 'api'; ffmpeg: boolean; python: boolean; key: boolean; logo: string | null; logoPutih: string | null; models: string[]; patterns: Pattern[] }
@@ -43,6 +44,7 @@ export default function App() {
   const [sending, setSending] = useState(false) // jeda antara POST dan job terdaftar
   const [kartuTutup, setKartuTutup] = useState<string | null>(null) // id job yang kartunya disembunyikan
   const [error, setError] = useState('')
+  const [grillJawab, setGrillJawab] = useState<Record<string, Record<number, GrillJawaban>>>({}) // chatId -> msgIndex -> jawaban
   const [videos, setVideos] = useState<Video[]>([])
   const [tick, setTick] = useState(0)
   const [brand, setBrand] = useState<Brand | null>(null)
@@ -223,7 +225,16 @@ export default function App() {
             </div>
           )}
           <div className="pane-chat" hidden={!show('chat')}>
-            <ChatPanel {...chatProps('edit')} onSend={(text) => send(text, 'edit')} placeholder="Tulis pesan, mis: shot kedua kurang bagus, ganti dengan klip dapur"
+            <ChatPanel {...chatProps('edit')} onSend={(text) => send(text, 'edit')}
+              grill={{
+                jawaban: grillJawab[chats.edit.id] ?? {},
+                onAnswer: (i, j, text) => {
+                  if (busy || !folder) return send(text, 'edit') // send menampilkan error, jawaban tidak disimpan
+                  const cid = chats.edit.id
+                  setGrillJawab((g) => ({ ...g, [cid]: { ...g[cid], [i]: j } }))
+                  send(text, 'edit')
+                },
+              }} placeholder="Tulis pesan, mis: shot kedua kurang bagus, ganti dengan klip dapur"
               empty={<>
                 <span className="empty-icon"><Icon name="film" size={24} /></span>
                 <h3>Siap mengedit reel</h3>

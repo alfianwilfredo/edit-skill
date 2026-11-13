@@ -1,0 +1,156 @@
+{
+  "name": "detail-sensorik-hangat",
+  "deskripsi": "Montase tenang berisi close-up tekstur, cahaya, dan gerak benda: kursi rotan, bayangan daun di tirai, lampu kap kain, tanaman di ceruk dinding, daun merah, air dituang, gelas dari atas, gorengan, mi di piring, tumpukan piring. Hard cut tiap 1.2-1.9 detik, tanpa transisi. Teks brand kecil 2 baris di tengah frame selama 8 shot pertama, logo di shot penutup. Grade hangat, kontras sedikit naik, terang sedikit turun.",
+  "cocok_untuk": "Interior atau tempat (restoran, kafe, rumah) yang ingin nuansa hangat dan sinematik lewat detail: material, cahaya, tanaman, benda, dan aktivitas kecil. Butuh 10-12 klip close-up stabil dengan tekstur atau cahaya yang kuat; minimal 8 bila beberapa detail digabung.",
+  "sumber": "contoh3.mp4 (10 shot, 15.59 detik; cut dari analyze_ref dengan deteksi hard cut per frame, dicek visual: 1 cut palsu di 10.43 detik digabung, 4 potongan cepat 12.27-14.12 detik di shot mi dihitung 1 shot)",
+  "durasi_total": 15.59,
+  "min_klip": 8,
+  "ideal_klip": [
+    10,
+    12
+  ],
+  "audio_panduan": "patterns/audio/detail-sensorik-hangat.m4a",
+  "alur": [
+    {
+      "slot": "pembuka",
+      "jenis_shot": "close-up kursi atau furnitur rotan/kayu dengan cahaya matahari dan bayangan",
+      "durasi": 1.2,
+      "gerak": "diam",
+      "transisi_masuk": null
+    },
+    {
+      "slot": "cahaya",
+      "jenis_shot": "bayangan daun atau cahaya matahari jatuh di tirai, dinding, atau kain",
+      "durasi": 1.23,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "lampu",
+      "jenis_shot": "close-up lampu hangat (kap kain, pendant) di ruang agak gelap",
+      "durasi": 1.6,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "sudut",
+      "jenis_shot": "ceruk dinding, vas, atau tanaman dengan dinding bertekstur",
+      "durasi": 1.92,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "tanaman",
+      "jenis_shot": "close-up daun atau tanaman, latar kabur",
+      "durasi": 1.63,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "aksi-1",
+      "jenis_shot": "aksi kecil: menuang air ke gelas, menata benda di meja",
+      "durasi": 1.59,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "detail-atas",
+      "jenis_shot": "close-up dari atas: gelas, mangkuk, atau permukaan benda",
+      "durasi": 1.56,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "aksi-2",
+      "jenis_shot": "aksi kecil kedua: memasak, merapikan, atau tangan memakai benda",
+      "durasi": 1.54,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "tekstur",
+      "jenis_shot": "close-up tekstur bergerak (makanan, kain, air), kamera sedikit goyang",
+      "durasi": 1.85,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "penutup",
+      "jenis_shot": "close-up tumpukan atau susunan benda berulang (piring, buku, kain) dengan area polos untuk logo",
+      "durasi": 1.47,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    }
+  ],
+  "wajib_input": {
+    "teks": "WAJIB ditanyakan ke klien sebelum render. isi di bawah harus diganti dari jawaban klien.",
+    "logo": "WAJIB: brand/logo.png (hitam) atau brand/logo-putih.png (putih), sesuai pilihan klien. Ganti logo.file di bawah bila klien memilih putih."
+  },
+  "teks": [
+    {
+      "slot": "pembuka",
+      "gaya": "judul",
+      "animasi": "fade",
+      "mulai": 0.0,
+      "durasi": 12.0,
+      "latar": false,
+      "y": 0.18,
+      "baris": [
+        {
+          "urutan": "atas",
+          "isi": null,
+          "skala": 0.55,
+          "font": "/System/Library/Fonts/Supplemental/Bodoni 72 Smallcaps Book.ttf",
+          "catatan": "TEBAKAN: serif kapital tipis dan lebar. Ganti kalau ketemu font asli."
+        },
+        {
+          "urutan": "bawah",
+          "isi": null,
+          "skala": 1.0,
+          "font": "DMSerifDisplay-Regular.ttf",
+          "catatan": "TEBAKAN: serif kapital tebal dan kondensed. Ganti kalau ketemu font asli."
+        }
+      ],
+      "wajib_input": "isi tiap baris dari klien. Urutan baris: 'atas' di atas, 'bawah' di bawah.",
+      "contoh_isi": [
+        "ALL THINGS",
+        "NOBA (contoh referensi, bukan teks klien)"
+      ]
+    }
+  ],
+  "logo": {
+    "slot": "penutup",
+    "posisi": "tengah",
+    "file": "brand/logo.png",
+    "ukuran": 0.45
+  },
+  "grade": {
+    "kontras": 1.08,
+    "saturasi": 0.95,
+    "terang": -0.03,
+    "hangat": 0.25
+  },
+  "font_contoh": {
+    "ciri": "dua font: 'atas' serif kapital tipis lebar; 'bawah' serif kapital tebal kondensed",
+    "terdekat": "atas: Bodoni 72 Smallcaps Book (tebakan); bawah: DM Serif Display (tebakan)",
+    "status": "belum terkonfirmasi. Nama font asli belum ditemukan di mesin ini"
+  }
+}

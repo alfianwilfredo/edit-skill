@@ -1,5 +1,7 @@
-import { useEffect, useRef, type ReactNode } from 'react'
+import { Fragment, useEffect, useRef, type ReactNode } from 'react'
 import { Icon } from './icons'
+import GrillCard from './GrillCard'
+import { parseGrill, type GrillJawaban } from './grill'
 import './panels.css'
 
 export type Msg = { role: 'user' | 'assistant' | 'tool' | 'error'; text: string }
@@ -17,9 +19,11 @@ type Props = {
   quick?: ReactNode
   placeholder: string
   progress?: ReactNode // kartu progres job tab ini (jalan, atau hasil terakhir)
+  // Kartu pertanyaan asisten; tanpa ini blok ```pertanyaan tampil sebagai teks biasa.
+  grill?: { jawaban: Record<number, GrillJawaban>; onAnswer: (i: number, j: GrillJawaban, text: string) => void }
 }
 
-export default function ChatPanel({ id, msgs, busy, ready, input, setInput, onSend, onNew, empty, quick, placeholder, progress }: Props) {
+export default function ChatPanel({ id, msgs, busy, ready, input, setInput, onSend, onNew, empty, quick, placeholder, progress, grill }: Props) {
   const thread = useRef<HTMLDivElement>(null)
   const adaKartu = !!progress
   // Gulir hanya area chat, bukan seluruh halaman.
@@ -43,11 +47,19 @@ export default function ChatPanel({ id, msgs, busy, ready, input, setInput, onSe
 
       <div className="thread" id={`${id}-chat-thread`} ref={thread}>
         {msgs.length === 0 && <div className="empty">{empty}</div>}
-        {msgs.map((m, i) => (
-          m.role === 'tool'
-            ? <div key={i} className="msg tool"><i />{m.text}</div>
-            : <div key={i} className={`msg ${m.role}`}>{m.text}</div>
-        ))}
+        {msgs.map((m, i) => {
+          if (m.role === 'tool') return <div key={i} className="msg tool"><i />{m.text}</div>
+          const g = grill && m.role === 'assistant' ? parseGrill(m.text) : null
+          if (!g || !grill) return <div key={i} className={`msg ${m.role}`}>{m.text}</div>
+          return (
+            <Fragment key={i}>
+              {g.before && <div className="msg assistant">{g.before}</div>}
+              <GrillCard chatId={id} msgIndex={i} data={g.data} saved={grill.jawaban[i]} disabled={busy || !ready}
+                answered={msgs.some((x, k) => k > i && x.role === 'user')} onAnswer={(j, text) => grill.onAnswer(i, j, text)} />
+              {g.after && <div className="msg assistant">{g.after}</div>}
+            </Fragment>
+          )
+        })}
         {progress ?? (busy && <div className="msg assistant typing" aria-label="Asisten sedang bekerja"><span /><span /><span /></div>)}
       </div>
 

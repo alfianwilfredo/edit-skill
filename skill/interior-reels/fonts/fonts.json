@@ -1,0 +1,236 @@
+[
+ {
+  "file": "DMSerifDisplay-Regular.ttf",
+  "nama": "DM Serif Display",
+  "kategori": "Serif elegan",
+  "ciri": "Serif tebal, kontras tinggi, hangat",
+  "cocok": "Judul proyek, nama ruang",
+  "lisensi": "OFL-dmserifdisplay.txt",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/dmserifdisplay/DMSerifDisplay-Regular.ttf"
+ },
+ {
+  "file": "PlayfairDisplay.ttf",
+  "nama": "Playfair Display",
+  "kategori": "Serif elegan",
+  "ciri": "Serif klasik ala majalah, kontras tinggi",
+  "cocok": "Judul mewah, editorial",
+  "lisensi": "OFL-playfairdisplay.txt",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/playfairdisplay/PlayfairDisplay%5Bwght%5D.ttf"
+ },
+ {
+  "file": "CormorantGaramond.ttf",
+  "nama": "Cormorant Garamond",
+  "kategori": "Serif elegan",
+  "ciri": "Serif tipis dan ramping, sangat anggun",
+  "cocok": "Judul besar yang tenang, butik",
+  "lisensi": "OFL-cormorantgaramond.txt",
+  "url": "https://cdn.jsdelivr.net/fontsource/fonts/cormorant-garamond@latest/latin-500-normal.ttf"
+ },
+ {
+  "file": "BodoniModa.ttf",
+  "nama": "Bodoni Moda",
+  "kategori": "Serif elegan",
+  "ciri": "Serif fashion, garis rambut tajam",
+  "cocok": "Gaya fashion, high-end",
+  "lisensi": "OFL-bodonimoda.txt",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/bodonimoda/BodoniModa%5Bopsz%2Cwght%5D.ttf"
+ },
+ {
+  "file": "Prata-Regular.ttf",
+  "nama": "Prata",
+  "kategori": "Serif elegan",
+  "ciri": "Serif didone lembut, mudah dibaca",
+  "cocok": "Judul dan sub-judul",
+  "lisensi": "OFL-prata.txt",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/prata/Prata-Regular.ttf"
+ },
+ {
+  "file": "Marcellus-Regular.ttf",
+  "nama": "Marcellus",
+  "kategori": "Serif elegan",
+  "ciri": "Serif ukir ala prasasti Romawi, flare halus",
+  "cocok": "Nama studio, kesan klasik",
+  "lisensi": "OFL-marcellus.txt",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/marcellus/Marcellus-Regular.ttf"
+ },
+ {
+  "file": "Italiana-Regular.ttf",
+  "nama": "Italiana",
+  "kategori": "Serif elegan",
+  "ciri": "Sangat tipis dan tinggi, minimalis",
+  "cocok": "Judul pendek berukuran besar",
+  "lisensi": "OFL-italiana.txt",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/italiana/Italiana-Regular.ttf"
+ },
+ {
+  "file": "Cinzel.ttf",
+  "nama": "Cinzel",
+  "kategori": "Serif elegan",
+  "ciri": "Huruf kapital saja, monumental",
+  "cocok": "Nama proyek singkat, kesan megah",
+  "lisensi": "OFL-cinzel.txt",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/cinzel/Cinzel%5Bwght%5D.ttf"
+ },
+ {
+  "file": "AbrilFatface-Regular.ttf",
+  "nama": "Abril Fatface",
+  "kategori": "Serif elegan",
+  "ciri": "Serif sangat tebal, poster",
+  "cocok": "Satu-dua kata yang menonjol",
+  "lisensi": "OFL-abrilfatface.txt",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/abrilfatface/AbrilFatface-Regular.ttf"
+ },
+ {
+  "file": "Poppins-Light.ttf",
+  "nama": "Poppins Light",
+  "kategori": "Sans modern",
+  "ciri": "Sans geometris tipis, bersih",
+  "cocok": "Sub-judul, label ruang",
+  "lisensi": "OFL-poppins.txt",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/poppins/Poppins-Light.ttf"
+ },
+ {
+  "file": "Poppins-Medium.ttf",
+  "nama": "Poppins Medium",
+  "kategori": "Sans modern",
+  "ciri": "Sans geometris sedang, jelas",
+  "cocok": "CTA, info kontak",
+  "lisensi": "OFL-poppins.txt",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/poppins/Poppins-Medium.ttf"
+ },
+ {
+  "file": "Montserrat.ttf",
+  "nama": "Montserrat",
+  "kategori": "Sans modern",
+  "ciri": "Sans geometris lebar, kokoh",
+  "cocok": "Judul modern, label",
+  "lisensi": "OFL-montserrat.txt",
+  "url": "https://cdn.jsdelivr.net/fontsource/fonts/montserrat@latest/latin-500-normal.ttf"
+ },
+ {
+  "file": "Jost.ttf",
+  "nama": "Jost",
+  "kategori": "Sans modern",
+  "ciri": "Sans geometris ala Futura, rapi",
+  "cocok": "Gaya skandinavia, minimalis",
+  "lisensi": "OFL-jost.txt",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/jost/Jost%5Bwght%5D.ttf"
+ },
+ {
+  "file": "JosefinSans.ttf",
+  "nama": "Josefin Sans",
+  "kategori": "Sans modern",
+  "ciri": "Sans vintage geometris, x-height rendah",
+  "cocok": "Kesan retro elegan",
+  "lisensi": "OFL-josefinsans.txt",
+  "url": "https://cdn.jsdelivr.net/fontsource/fonts/josefin-sans@latest/latin-400-normal.ttf"
+ },
+ {
+  "file": "Raleway.ttf",
+  "nama": "Raleway",
+  "kategori": "Sans modern",
+  "ciri": "Sans ramping dan elegan",
+  "cocok": "Sub-judul, teks pendek",
+  "lisensi": "OFL-raleway.txt",
+  "url": "https://cdn.jsdelivr.net/fontsource/fonts/raleway@latest/latin-500-normal.ttf"
+ },
+ {
+  "file": "TenorSans-Regular.ttf",
+  "nama": "Tenor Sans",
+  "kategori": "Sans modern",
+  "ciri": "Sans humanis dengan sentuhan klasik",
+  "cocok": "Label premium, nama ruang",
+  "lisensi": "OFL-tenorsans.txt",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/tenorsans/TenorSans-Regular.ttf"
+ },
+ {
+  "file": "Lato-Regular.ttf",
+  "nama": "Lato",
+  "kategori": "Sans modern",
+  "ciri": "Sans netral dan hangat, sangat terbaca",
+  "cocok": "Teks info, alamat",
+  "lisensi": "OFL-lato.txt",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/lato/Lato-Regular.ttf"
+ },
+ {
+  "file": "DMSans.ttf",
+  "nama": "DM Sans",
+  "kategori": "Sans modern",
+  "ciri": "Sans rendah kontras, modern",
+  "cocok": "Teks info, CTA",
+  "lisensi": "OFL-dmsans.txt",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/dmsans/DMSans%5Bopsz%2Cwght%5D.ttf"
+ },
+ {
+  "file": "Syne.ttf",
+  "nama": "Syne",
+  "kategori": "Sans modern",
+  "ciri": "Sans artistik, sedikit eksentrik",
+  "cocok": "Studio kreatif, kesan berani",
+  "lisensi": "OFL-syne.txt",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/syne/Syne%5Bwght%5D.ttf"
+ },
+ {
+  "file": "BebasNeue-Regular.ttf",
+  "nama": "Bebas Neue",
+  "kategori": "Tegas",
+  "ciri": "Kapital saja, kondensed, tegas",
+  "cocok": "Judul tur cepat, angka, progres",
+  "lisensi": "OFL-bebasneue.txt",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/bebasneue/BebasNeue-Regular.ttf"
+ },
+ {
+  "file": "Anton-Regular.ttf",
+  "nama": "Anton",
+  "kategori": "Tegas",
+  "ciri": "Kondensed sangat tebal",
+  "cocok": "Judul besar yang mencolok",
+  "lisensi": "OFL-anton.txt",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/anton/Anton-Regular.ttf"
+ },
+ {
+  "file": "Oswald.ttf",
+  "nama": "Oswald",
+  "kategori": "Tegas",
+  "ciri": "Sans kondensed klasik",
+  "cocok": "Label ruang, update konstruksi",
+  "lisensi": "OFL-oswald.txt",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/oswald/Oswald%5Bwght%5D.ttf"
+ },
+ {
+  "file": "GreatVibes-Regular.ttf",
+  "nama": "Great Vibes",
+  "kategori": "Script",
+  "ciri": "Tulisan tangan sambung, mengalir",
+  "cocok": "Aksen satu kata, tanda tangan",
+  "lisensi": "OFL-greatvibes.txt",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/greatvibes/GreatVibes-Regular.ttf"
+ },
+ {
+  "file": "Allura-Regular.ttf",
+  "nama": "Allura",
+  "kategori": "Script",
+  "ciri": "Script halus dan ringan",
+  "cocok": "Aksen romantis, ucapan",
+  "lisensi": "OFL-allura.txt",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/allura/Allura-Regular.ttf"
+ },
+ {
+  "file": "Parisienne-Regular.ttf",
+  "nama": "Parisienne",
+  "kategori": "Script",
+  "ciri": "Script kasual ala Prancis",
+  "cocok": "Aksen hangat, sub-judul pendek",
+  "lisensi": "OFL-parisienne.txt",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/parisienne/Parisienne-Regular.ttf"
+ },
+ {
+  "file": "PinyonScript-Regular.ttf",
+  "nama": "Pinyon Script",
+  "kategori": "Script",
+  "ciri": "Script formal ala undangan",
+  "cocok": "Aksen mewah, satu-dua kata",
+  "lisensi": "OFL-pinyonscript.txt",
+  "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/pinyonscript/PinyonScript-Regular.ttf"
+ }
+]

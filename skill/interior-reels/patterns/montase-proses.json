@@ -1,0 +1,167 @@
+{
+  "name": "montase-proses",
+  "deskripsi": "Montase cepat proses kerja pembuatan produk (furnitur, tekstil, kayu). Hard cut tiap 0.4-1.3 detik, tanpa transisi. Judul serif \"A day in our factory\" di dua shot pembuka, logo brand di shot penutup. Grade dingin kehijauan, sedikit pudar.",
+  "cocok_untuk": "Behind the scenes pabrik, workshop, atau tukang: menunjukkan proses dan tangan bekerja. Butuh 12-14 klip pendek dari beberapa stasiun kerja berbeda (tufting, jahit, semprot, amplas, dan wide area kerja).",
+  "sumber": "contoh2.mp4 (14 shot, 13.16 detik; cut dari scene detector ffmpeg threshold 0.15, dicek frame by frame; tanpa transisi). Teks asli: masuk frame 2 (0.07s), fade 4 frame, keluar hard di cut ke-2 (1.63s); di pattern diperpanjang sampai cut ke-4 (2.87s) agar terbaca. Akhir: fade ke hitam 0.3s.",
+  "durasi_total": 13.16,
+  "min_klip": 11,
+  "ideal_klip": [
+    12,
+    14
+  ],
+  "audio_panduan": "patterns/audio/montase-proses.m4a",
+  "alur": [
+    {
+      "slot": "pembuka",
+      "jenis_shot": "wide ruang pabrik terang dengan tiang, orang berjalan menjauh di tengah frame, kamera ikut maju pelan, teks judul di tengah",
+      "durasi": 0.93,
+      "gerak": "zoom-in",
+      "transisi_masuk": null
+    },
+    {
+      "slot": "proses-1",
+      "jenis_shot": "medium close pekerja dengan panel kayu di depan kamera, teks judul masih tampil",
+      "durasi": 0.7,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "proses-2",
+      "jenis_shot": "extreme close-up tekstur kain tufting berwarna mint dengan kancing",
+      "durasi": 0.57,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "proses-3",
+      "jenis_shot": "medium pekerja di meja kerja dengan rangka kursi berlapis di atas kuda-kuda",
+      "durasi": 0.67,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "proses-4",
+      "jenis_shot": "close-up mesin jahit dengan kain di bawah jarum",
+      "durasi": 0.43,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "proses-5",
+      "jenis_shot": "close-up mesin jahit lain melintasi kain bertekstur",
+      "durasi": 0.37,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "proses-6",
+      "jenis_shot": "medium close pekerja merapikan kain pelapis pada sandaran sofa",
+      "durasi": 1.3,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "proses-7",
+      "jenis_shot": "close-up tangan memegang alat semprot di atas papan kayu",
+      "durasi": 0.77,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "proses-8",
+      "jenis_shot": "medium pekerja muda dengan kaus logo memegang rangka kayu di area kerja",
+      "durasi": 0.77,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "proses-9",
+      "jenis_shot": "wide area kerja luas dengan beberapa pekerja dan meja kayu",
+      "durasi": 0.67,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "proses-10",
+      "jenis_shot": "medium alat semprot (spray gun) mengarah ke bagian kayu di meja",
+      "durasi": 1.33,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "proses-11",
+      "jenis_shot": "wide area kerja berdebu dengan meja kayu hasil amplas, cahaya pudar keabuan",
+      "durasi": 0.9,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "proses-12",
+      "jenis_shot": "close-up tangan dan material kayu pucat di area kerja terang",
+      "durasi": 1.27,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    },
+    {
+      "slot": "penutup",
+      "jenis_shot": "logo N di dinding hijau muda dengan kursi berlapis di depan, area polos untuk logo",
+      "durasi": 2.48,
+      "gerak": "diam",
+      "transisi_masuk": {
+        "jenis": "cut"
+      }
+    }
+  ],
+  "teks": [
+    {
+      "slot": "pembuka",
+      "gaya": "judul",
+      "animasi": "fade",
+      "mulai": 0.07,
+      "durasi": 2.8,
+      "latar": false,
+      "contoh_isi": "A day in\nour factory",
+      "fade": 0.13,
+      "sampai_slot": "proses-3",
+      "keluar": "cut"
+    }
+  ],
+  "logo": {
+    "slot": "penutup",
+    "posisi": "bawah",
+    "ukuran": 0.32
+  },
+  "grade": {
+    "kontras": 1.05,
+    "saturasi": 0.85,
+    "terang": 0.0,
+    "hangat": -0.2
+  },
+  "akhir": {
+    "fade": 0.3
+  }
+}
