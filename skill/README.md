@@ -1,96 +1,91 @@
 # Interior Reels Skill
 
-Skill Claude untuk mengedit klip mentah proyek interior menjadi Instagram Reel 9:16, lengkap dengan transisi, teks beranimasi, color grade, dan logo. Gaya edit diatur oleh **pattern** yang bisa ditambah dari video contoh.
+Skill Claude untuk mengedit klip mentah proyek interior menjadi Instagram Reel 9:16, lengkap dengan transisi, teks beranimasi, color grade, logo, dan musik. Gaya edit diatur oleh **pattern** yang dibuat dari video contoh.
+
+Skill ini dipakai oleh aplikasi GUI di `../frontend`. Cara instalasi dan pemakaian untuk klien ada di [README utama](../README.md). Dokumen ini menjelaskan isi skill-nya.
 
 ## Isi folder
 
 ```
-edit-skill/
+skill/
 ├── README.md                ← dokumen ini
-└── interior-reels/          ← folder skill (ini yang dipasang)
-    ├── SKILL.md             ← instruksi untuk Claude: alur kerja + aturan bercerita interior
-    ├── PLAN.md              ← referensi format plan.json
-    ├── setup.sh             ← cek alat + unduh font
-    ├── brand.json           ← data tetap klien: nama studio, CTA, logo, pattern default
-    ├── brand/               ← logo.png (hitam) dan logo-putih.png (putih)
-    ├── fonts/               ← diisi otomatis oleh setup.sh dari fonts.json (26 font Google, lisensi OFL)
+├── contoh-video/            ← video contoh tiap pattern (preview GUI + bahan training)
+│   └── contoh2.mp4          ← contoh untuk montase-proses
+└── interior-reels/          ← folder skill
+    ├── SKILL.md             ← instruksi untuk Claude: aturan mutlak, alur edit, revisi, training, ekstraksi referensi
+    ├── PLAN.md              ← format plan.json, overlay.json, klip.json
+    ├── setup.sh             ← cek python/ffmpeg-full + unduh font
+    ├── brand.json           ← data studio: nama, website, Instagram, CTA, pattern default
+    ├── brand/               ← logo.png (hitam), logo-putih.png (putih), musik/ (library musik studio)
+    ├── fonts/               ← diisi setup.sh dari fonts.json (font Google, lisensi OFL)
     ├── patterns/            ← library gaya edit, 1 file JSON per pattern
-    │   ├── reveal-tenang.json   (14 detik, pelan, crossfade panjang)
-    │   └── tur-ritmis.json      (12 detik, cepat, tur ruang per ruang)
+    │   ├── montase-proses.json
+    │   ├── audio/           ← audio panduan dari video contoh
+    │   └── _backup/         ← versi lama pattern, dibuat otomatis saat training menyimpan perubahan
+    ├── _ref/                ← hasil analisis video contoh (draft, lembar shot)
     └── scripts/
-        ├── scan_clips.py    ← klip → grid 8 frame per klip, supaya Claude bisa "melihat"
-        ├── analyze_ref.py   ← video contoh → draft pattern (deteksi cut + transisi bertahap)
-        ├── render.py        ← plan.json → video 1080×1920 30fps H.264 + grid cek
+        ├── scan_clips.py      ← klip → grid frame, supaya Claude bisa "melihat" isinya
+        ├── review_bahan.py    ← lembar review semua klip; render menolak klip yang belum direview
+        ├── analyze_clip.py    ← tandai bagian klip yang gelap, kosong, atau blur
+        ├── stabil.py          ← ukur goyang dan siapkan stabilisasi (vidstab)
+        ├── render.py          ← plan.json → video 1080×1920 30 fps H.264 + gambar cek
+        ├── beat.py            ← deteksi ketukan musik, geser cut ke ketukan
+        ├── analyze_ref.py     ← video contoh → draft pattern (cut, transisi, audio)
+        ├── bandingkan.py      ← bandingkan video contoh vs hasil render, shot per shot
+        ├── font_match.py      ← cari font yang paling mirip teks di video contoh
+        ├── ukur_font.py       ← ukur lebar teks per font
+        ├── simpan_pattern.py  ← simpan perubahan pattern dengan backup
         └── _common.py
 ```
 
-Tidak ada dependensi Python tambahan, cukup Python 3 dan ffmpeg.
+Tidak ada dependensi Python tambahan. Cukup Python 3 dan `ffmpeg-full` (Homebrew), karena render butuh filter `drawtext` dan `vidstab`.
 
-## Cara kerja (untuk presentasi)
+## Gaya yang tersedia
 
-1. **Scan**: setiap klip dipecah menjadi 8 frame. Claude melihat semuanya lalu mencatat jenis shot, ruangan, kualitas, dan detik terbaik.
-2. **Pattern**: gaya edit disimpan sebagai daftar slot. Tiap slot punya jenis shot yang dicari, durasi, gerak kamera, transisi, dan teks.
-3. **Menyusun cerita**: Claude mengisi slot dengan klip yang paling cocok, mengikuti aturan cerita interior (pembuka terkuat, alur sesuai denah, wide dan detail berselang-seling, arah gerak menyambung).
-4. **Render dan cek ulang**: preview cepat, lalu Claude melihat hasilnya sendiri, memperbaiki, dan merender final.
-5. **Pattern baru dari contoh**: video contoh dianalisis otomatis (titik cut dan ritme), lalu Claude melihat frame-nya untuk mengenali transisi, teks, dan warna. Hasilnya tersimpan sebagai pattern yang bisa dipakai ulang.
+| Pattern | Video contoh | Ciri |
+|---|---|---|
+| `montase-proses` | `contoh-video/contoh2.mp4` | 14 shot, ±13 detik, hard cut tanpa transisi, teks judul di awal, fade ke hitam di akhir |
 
-## Pasang di Mac (sekali saja)
+Gaya baru ditambah lewat tab **Gaya baru** di GUI. Video contohnya otomatis disalin ke `contoh-video/<nama>.mp4` dan ditulis di field `video_contoh` pattern.
+
+## Cara kerja
+
+1. **Review klip**: setiap klip dipecah jadi lembar frame. Claude melihat semuanya, lalu mencatat jenis shot, ruangan, kualitas, dan rentang detik yang layak dipakai.
+2. **Pattern**: gaya edit disimpan sebagai daftar slot. Tiap slot punya jenis shot yang dicari, durasi, gerak kamera, transisi, efek, dan grade.
+3. **Menyusun cerita**: Claude mengisi slot dengan klip yang paling cocok, mengikuti aturan cerita interior: pembuka terkuat, alur sesuai denah, wide dan detail berselang-seling, arah gerak menyambung.
+   - **Ikuti referensi**: alur pattern disalin persis (jumlah slot, urutan, durasi).
+   - **Custom**: pattern hanya titik awal gaya. Durasi dan jumlah segmen menyesuaikan klip.
+4. **Pilihan klien selalu menang**: teks, logo, dan audio dari `_edit/overlay.json`. Klip pembuka, penutup, dan "jangan dipakai" dari `_edit/klip.json`. `render.py` menolak plan yang melanggar `klip.json`.
+5. **Render dan cek ulang**: preview cepat, lalu Claude melihat gambar cek, memperbaiki plan, dan merender final ke `<folder klip>/hasil/`.
+6. **Revisi**: pesan setelah hasil ada diproses lewat tanya-jawab. Claude mengirim pertanyaan dan temuannya sebagai kartu pilihan di GUI, lalu ringkasan perubahan, dan baru mengerjakan setelah klien menekan **Kerjakan**.
+7. **Training**: Claude merender uji pattern dengan klip klien, membandingkan dengan video contoh (`bandingkan.py`), lalu mengusulkan perbaikan pattern. Hasil training ada di `<folder klip>/_training/<pattern>/`. Pelajarannya disimpan di field `catatan_training` dan dibaca lagi saat edit berikutnya.
+
+## Pakai tanpa GUI (Claude Code)
+
+Skill juga bisa dipakai langsung dari Claude Code di Terminal:
 
 ```bash
 mkdir -p ~/.claude/skills
-ln -s /Users/tad-01/Desktop/amantana/KK/edit-skill/interior-reels ~/.claude/skills/interior-reels
+ln -s "$(pwd)/interior-reels" ~/.claude/skills/interior-reels   # jalankan dari folder skill/
 bash ~/.claude/skills/interior-reels/setup.sh
 ```
 
-`ln -s` membuat shortcut, jadi perubahan di folder Desktop langsung terpakai. Setup harus diakhiri dengan `SIAP`.
+Lalu buka `claude` di folder yang berisi klip, misalnya:
 
-`brand.json` sudah berisi data tetap KEZIAKARIN studio (keziakarin.com, @keziakarin.studio). Logo ada dua: `brand/logo.png` (hitam) dan `brand/logo-putih.png` (putih). Tidak perlu diubah.
-
-## Tes di Claude Code
-
-```bash
-mkdir -p ~/Desktop/reel-tes/klip    # isi dengan 5-10 klip mentah
-cd ~/Desktop/reel-tes
-claude
-```
-
-Contoh perintah di Claude Code:
-
-- `Edit klip di folder klip jadi reel pakai pattern reveal-tenang. Proyeknya "Rumah Tropis, Bintaro".`
-- `Edit klip di folder klip, pilih pattern yang paling cocok.`
-- `Jadikan video contoh.mp4 pattern baru bernama minimalis-hangat.`
+- `Edit klip di folder ini jadi reel pakai pattern montase-proses.`
 - `Shot kedua kurang bagus, ganti dengan klip dapur, lalu render ulang.`
 
-Hasilnya ada di `klip/hasil/`: `*_preview.mp4` (cepat, 540×960), video final, dan `*_cek.jpg` (grid 12 frame).
+## Menambah atau mengubah pattern
 
-Kecepatan di komputer uji (tanpa GPU): preview 14 detik selesai dalam ±12 detik, final 1080p dalam ±70 detik. Mac seri M biasanya lebih cepat.
+- **Pattern baru**: pakai tab Gaya baru di GUI. Pattern disimpan hanya setelah uji `bandingkan.py` lolos.
+- **Memperbaiki pattern**: pakai tab Training gaya. Jangan menyunting `patterns/*.json` langsung. Perubahan harus lewat `scripts/simpan_pattern.py` supaya versi lama tercadang di `patterns/_backup/`.
+- Field pattern dijelaskan di `PLAN.md` dan di dalam file pattern itu sendiri.
 
-## Naskah demo besok (±5 menit)
+## Batasan
 
-1. Tunjukkan folder klip mentah yang berantakan.
-2. Ketik: `Edit klip di folder klip pakai pattern reveal-tenang, proyek "<nama>"`.
-3. Biarkan audiens melihat Claude membuka grid tiap klip dan menjelaskan pilihannya. Ini bagian yang paling meyakinkan.
-4. Putar hasil video.
-5. Ketik: `Sekarang versi tur-ritmis dari klip yang sama.` Ini menunjukkan satu footage bisa menghasilkan banyak gaya.
-6. (Opsional) `Jadikan video contoh.mp4 pattern baru` untuk menunjukkan library pattern bisa terus bertambah.
-
-Tips: siapkan klip yang sudah dites malam ini, dan render sekali sebelum presentasi supaya ada hasil cadangan.
-
-## Pasang di laptop klien
-
-1. Pasang Homebrew, lalu jalankan `brew install ffmpeg python`.
-2. Salin folder `interior-reels` (sudah berisi `brand.json` dan logo) ke `~/.claude/skills/` milik klien.
-3. Jalankan `bash ~/.claude/skills/interior-reels/setup.sh`.
-4. Pastikan skill terbaca di aplikasi Claude yang dipakai klien. Cara pasang skill di Claude Desktop / Cowork perlu dicek ulang sebelum serah terima.
-
-## Menambah pattern
-
-Cara termudah: berikan video contoh ke Claude dan minta "jadikan pattern". Bisa juga dengan menyalin file pattern yang ada lalu mengubah slotnya secara manual. Field-nya dijelaskan di dalam file pattern itu sendiri dan di `PLAN.md`.
-
-## Batasan yang perlu diketahui
-
-- Claude "melihat" klip lewat 8 frame per klip, bukan menonton penuh. Gerakan sangat cepat di antara frame bisa terlewat.
-- Deteksi transisi pada video contoh akurat untuk posisi, tapi jenis dan durasi transisi ditentukan Claude dari gambar, jadi bisa sedikit berbeda dari aslinya.
-- Efek yang tidak didukung: animasi teks per huruf, efek 3D, masking objek, speed ramp. Semua bisa ditambahkan nanti.
-- Audio diatur di GUI: audio panduan dari video contoh (default hanya untuk preview), library studio `brand/musik/`, atau tanpa. Cut otomatis disinkronkan ke ketukan. Lagu trending tetap ditambahkan di aplikasi Instagram.
-- Font: 26 font Google (OFL, bebas dipakai komersial) dalam 4 kategori: Serif elegan, Sans modern, Tegas, Script. Daftar, ciri, dan kegunaan tiap font ada di `fonts/fonts.json`; GUI menampilkan contoh tulisan tiap font saat memilih. Tambah font: taruh .ttf di `fonts/` lalu tambah entri di `fonts/fonts.json` (font tanpa entri tetap muncul di kategori "Lainnya").
+- Claude "melihat" klip lewat potongan frame, bukan menonton penuh. Gerakan sangat cepat di antara frame bisa terlewat.
+- Posisi cut dari video contoh terdeteksi akurat, tetapi jenis dan durasi transisi ditentukan Claude dari gambar, jadi bisa sedikit berbeda dari aslinya.
+- `bandingkan.py` bisa melewatkan cut di antara dua klip yang sama-sama gelap atau mirip. Laporan training mencatat bila selisih jumlah shot disebabkan footage, bukan pattern.
+- Efek yang belum didukung: animasi teks per huruf, efek 3D, masking objek, speed ramp. Pattern mencatatnya di `belum_didukung`.
+- Audio diatur di GUI: audio panduan dari video contoh, library studio `brand/musik/`, atau tanpa musik. Audio referensi milik orang lain, jadi lagu untuk unggahan sebaiknya dipilih di aplikasi Instagram.
+- Font: daftar, kategori, dan kegunaan tiap font ada di `fonts/fonts.json`. Untuk menambah font, taruh file `.ttf` di `fonts/` lalu tambah entrinya di `fonts.json`.
