@@ -1,0 +1,38 @@
+/* Daftar klip (KlipList) di kartu Folder klip + baris pattern dengan tombol pratinjau. */
+.klip { margin-top: 8px; min-width: 0; }
+.klip-head { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 32px; padding: 4px 6px; border: none; border-radius: 8px; background: transparent; color: var(--text); font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; }
+.klip-head:hover { background: var(--surface-2); }
+.klip-chev { display: inline-grid; color: var(--muted); transition: transform .15s; }
+.klip-chev.open { transform: rotate(90deg); }
+.klip-grid { list-style: none; margin: 4px 0 0; padding: 4px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; max-height: 360px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; border-radius: 10px; border: 1px solid var(--border); background: var(--surface-2); }
+.klip-item { display: flex; flex-direction: column; gap: 4px; min-width: 0; padding: 4px; border-radius: 9px; border: 1.5px solid transparent; background: var(--surface); }
+.klip-item.r-pembuka, .klip-item.r-penutup { border-color: var(--accent); }
+.klip-item.r-jangan { border-style: dashed; border-color: var(--border-strong); }
+.klip-item.r-jangan .klip-thumb img { opacity: .45; }
+.klip-thumb { position: relative; display: grid; place-items: center; width: 100%; aspect-ratio: 1; padding: 0; overflow: hidden; border: none; border-radius: 7px; background: var(--surface-2); color: var(--muted); cursor: pointer; }
+.klip-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.klip-thumb:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.klip-dur, .klip-badge { position: absolute; font-size: 10.5px; font-weight: 700; line-height: 1; padding: 3px 6px; border-radius: 999px; }
+.klip-dur { right: 4px; bottom: 4px; background: color-mix(in srgb, var(--primary) 80%, transparent); color: var(--on-primary); font-variant-numeric: tabular-nums; }
+.klip-badge { left: 4px; top: 4px; max-width: calc(100% - 8px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; background: var(--accent); color: var(--on-primary); }
+.klip-item.r-jangan .klip-badge { background: var(--warn-bg); color: var(--warn-text); }
+.klip-name { font-size: 11.5px; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 2px; }
+.klip-item select { min-height: 32px; padding: 4px 8px; font-size: 12px; line-height: 18px; border-radius: 7px; }
+.klip .hint.warn { margin-top: 6px; }
+
+.pat-row { display: flex; align-items: center; gap: 2px; flex: none; min-width: 0; }
+.pat-row .pat { flex: 1; min-width: 0; }
+.pat-play { flex: none; color: var(--accent); }
+
+/* Dialog umum */
+.modal.wide { width: min(560px, 100%); }
+.modal-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; }
+.modal-head h3 { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.modal-video { width: 100%; max-height: calc(100dvh - 140px); border-radius: 10px; background: var(--surface-2); display: block; }
+
+@media (max-width: 767px), (pointer: coarse) {
+  .klip-head { min-height: 40px; }
+  .klip-item select { min-height: 42px; font-size: 16px; }
+  .pat-play { width: 40px; min-height: 40px; }
+}
+@media (prefers-reduced-motion: reduce) { .klip-chev { transition: none; } }

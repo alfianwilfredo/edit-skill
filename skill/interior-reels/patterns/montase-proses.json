@@ -10,6 +10,7 @@
     14
   ],
   "audio_panduan": "patterns/audio/montase-proses.m4a",
+  "video_contoh": "contoh2.mp4",
   "alur": [
     {
       "slot": "pembuka",

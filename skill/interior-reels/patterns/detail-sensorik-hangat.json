@@ -10,6 +10,7 @@
     12
   ],
   "audio_panduan": "patterns/audio/detail-sensorik-hangat.m4a",
+  "video_contoh": "contoh3.mp4",
   "alur": [
     {
       "slot": "pembuka",

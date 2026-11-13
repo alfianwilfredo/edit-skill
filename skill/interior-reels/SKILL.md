@@ -27,6 +27,7 @@ Jalankan `bash SKILL/setup.sh`. Kalau ada GAGAL, bereskan dulu. Baca `SKILL/bran
 10. **Lihat frame sebelum final.** Saran dari analisis harus dicek dengan melihat frame di rentang itu (grid atau preview). Analisis tidak tahu apakah objek utamanya bagus atau apakah bagian tersebut adalah pembuka yang tepat.
 11. **Review semua klip bahan dulu.** Jalankan `scripts/review_bahan.py <folder-bahan>`, lihat SETIAP lembar di `_review/` sampai habis, lalu isi JSON tiap klip (`sudah_dilihat`, `goyang`, `rentang_layak`, `keputusan`). `render.py` menolak render kalau klip belum direview atau segmen di luar `rentang_layak` (kecuali `--abaikan-kualitas`).
 12. **Cek teks setelah render.** Posisi teks dipilih klien (grid 3x3). Setelah render, lihat `*_teks<N>_cek.jpg` (kotak merah = perkiraan area teks). Kalau teks menutupi wajah atau objek utama, beri tahu klien dan sarankan posisi lain. Jangan mengubah posisi sendiri tanpa persetujuan.
+13. **Klip pilihan klien dari `<folder>/_edit/klip.json`.** Baca file ini sebelum membuat plan (format di `PLAN.md` bagian `klip.json`). `pembuka` = klip segmen pertama, `penutup` = klip segmen terakhir, `jangan` = tidak boleh dipakai di segmen mana pun. Pilihan klien menang atas `jenis_shot` pattern; kalau jenis shot klip itu beda dari slot pattern, beri tahu klien. Detik terbaik di dalam klip pilihan tetap dipilih asisten. `render.py` menolak plan yang melanggar file ini (tidak bisa dilewati `--abaikan-kualitas`). Jangan mengubah atau menghapus `klip.json`; file ini ditulis GUI.
 
 ## Alur: edit klip menjadi reel
 
@@ -71,6 +72,7 @@ Berlaku bila pesan klien diakhiri `[mode revisi: ...]` (GUI menambahkannya saat 
 4. **`Kerjakan sesuai ringkasan.`** = kerjakan persis isi ringkasan terakhir (edit plan/overlay, preview, final), lalu laporkan seperti biasa.
 5. Pesan teks bebas saat kartu terbuka = jawaban bebas. Perlakukan seperti `Jawaban:`.
 6. Maksimal 2 ronde pertanyaan per revisi. Permintaan yang sudah sangat jelas (mis. "ganti font jadi Great Vibes") tetap lewat 1 ronde singkat (cukup temuan, atau 1 pertanyaan konfirmasi), lalu ringkasan.
+7. **Pesan "klip pilihan berubah"** (dikirim GUI setelah klien mengubah klip pembuka, penutup, atau jangan dipakai) = revisi biasa: baca `_edit/klip.json` terbaru dan terapkan ke plan lewat langkah 1-4 di atas (aturan mutlak 13).
 
 Format blok (JSON valid, satu blok per balasan):
 
@@ -115,7 +117,7 @@ Ikuti **Aturan ekstraksi referensi** di atas.
    Isi semua `"?"` di `draft.json`. Langsung isi `cocok_untuk` (jenis proyek, jumlah klip, jenis shot yang dibutuhkan) dari hasil melihat video, jangan dibiarkan `"?"`. Kalau mirip pattern bawaan, sebut nama pattern itu di jawaban. Lalu isi: nama slot, `jenis_shot` sebagai deskripsi yang bisa dicocokkan dengan klip lain (bukan "shot dapur proyek X"), gerak, transisi, teks beserta gayanya, dan grade (bandingkan warna dengan aslinya: lebih hangat, pudar, atau kontras).
    **Jumlah klip.** Isi `min_klip` (angka) dan `ideal_klip` (`[min, maks]`). Mulai dari `min_klip_saran_otomatis` (jumlah shot ≥ 0.3 detik), lalu koreksi dari gambar: kurangi untuk shot yang bukan footage (kartu hitam/putih, logo, kolase grafis), kilasan blur transisi, dan shot berurutan yang bisa diambil dari klip yang sama (sudut lain, detik lain). Jangan kurangi untuk ruang, stasiun kerja, atau subjek yang berbeda. `ideal_klip` biasanya dari `min_klip` sampai jumlah slot. Sebutkan angka ini di `cocok_untuk` juga. Hapus `min_klip_saran_otomatis` sebelum disimpan.
    **Audio panduan.** `analyze_ref.py` menyimpan audio video contoh ke `_ref/<nama>/audio.m4a`. Saat pattern disimpan lewat GUI, file ini disalin ke `patterns/audio/<nama>.m4a` dan field `audio_panduan` diisi otomatis. Kalau gaya pelan (cut jarang, musik tenang), isi `"sinkron": "2beat"`.
-4. Simpan sebagai `SKILL/patterns/<nama>.json` hanya setelah uji `bandingkan.py` lolos (aturan 4). Hapus `efek_cek` setelah semua efek dipetakan; `belum_didukung` tetap disimpan.
+4. Simpan sebagai `SKILL/patterns/<nama>.json` hanya setelah uji `bandingkan.py` lolos (aturan 4). Hapus `efek_cek` setelah semua efek dipetakan; `belum_didukung` tetap disimpan. Saat disimpan lewat GUI, video contoh otomatis disalin ke `skill/contoh-video/<nama>.mp4` (h264 disalin, format lain dikonversi ke h264 720p di background) dan field `video_contoh` diisi. Video asli tidak dihapus.
 
 Kalau `durasi_shot` terlihat salah (ada cut terlewat, atau gerakan kamera terbaca sebagai cut), ulangi dengan `--thr 30` atau `--thr 55`.
 

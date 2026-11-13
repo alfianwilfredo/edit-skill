@@ -80,6 +80,16 @@ Posisi baris: atas mulai di 15% tinggi layar, tengah di 50%, bawah berakhir di 7
 
 Sinkron ketukan: tiap cut digeser ke ketukan terdekat maksimal ±0.25 detik, shot minimal 0.5 detik, total durasi tetap (shot terakhir menyesuaikan). Pergeseran hanya di memori saat render, `plan.json` tidak berubah. Kalau ketukan kurang jelas (musik ambient), cut tidak digeser dan render mencetak peringatan. Narasi (`suara` di plan) tetap berjalan seperti biasa. Hak cipta: audio referensi milik pembuat video contoh. Pakai di final hanya atas keputusan klien.
 
+## klip.json (klip pilihan klien dari GUI)
+
+Lokasi: `<folder klip>/_edit/klip.json`. Ditulis GUI; asisten hanya membaca. Nama = nama file klip (tanpa folder).
+
+```json
+{"pembuka": "IMG_2201.MOV", "penutup": "IMG_2230.MOV", "jangan": ["IMG_2205.MOV"]}
+```
+
+`pembuka` wajib jadi segmen pertama, `penutup` segmen terakhir, klip di `jangan` tidak boleh dipakai. `null`/`[]` = bebas. `render.py` menolak plan yang melanggar (dibandingkan per nama file).
+
 ## field tingkat plan (bingkai dan efek)
 
 | field | arti | default |

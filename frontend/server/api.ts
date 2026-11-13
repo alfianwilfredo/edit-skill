@@ -6,7 +6,9 @@ import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, writeFi
 import path from 'node:path'
 import { MODELS, listVideos, runScript, runTurn, skillPrompt, type Session } from './agent.ts'
 import { cliAvailable, runTurnCli } from './cli.ts'
-import { getApiKey, getEngine, setApiKey, SKILL_DIR } from './paths.ts'
+import { CONTOH_DIR, getApiKey, getEngine, setApiKey, SKILL_DIR } from './paths.ts'
+import { body, editDir, fileUrl, json, type Route } from './http.ts'
+import { klipRoutes, salinVideoContoh } from './klip.ts'
 import { batalJob, jobBerjalan, startJob, viewJob, type Jenis, type Tab } from './job.ts'
 
 const sessions = new Map<string, Session>()
@@ -16,39 +18,10 @@ const LOGO_PUTIH = path.join(SKILL_DIR, 'brand', 'logo-putih.png')
 const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/
 const refDir = (n: string) => path.join(SKILL_DIR, '_ref', n)
 const patFile = (n: string) => path.join(SKILL_DIR, 'patterns', `${n}.json`)
-const fileUrl = (p: string) => `/api/file?p=${encodeURIComponent(p)}`
 const FONTS = path.join(SKILL_DIR, 'fonts')
 const MUSIK = path.join(SKILL_DIR, 'brand', 'musik')
 const AUDIO_EXT = /\.(mp3|m4a|wav|aac)$/i
 const skillFile = (rel: unknown) => (typeof rel === 'string' && rel && existsSync(path.join(SKILL_DIR, rel)) ? rel : null)
-
-// Folder klip harus ada dan berada di bawah HOME. overlay.json dan plan.json ada di <folder>/_edit/.
-function editDir(folder: unknown) {
-  if (typeof folder !== 'string' || !folder) return null
-  const f = path.resolve(folder)
-  if (!f.startsWith(process.env.HOME ?? '/') || !existsSync(f)) return null
-  return path.join(f, '_edit')
-}
-
-function body(req: IncomingMessage, max = 10 << 20): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
-    const chunks: Buffer[] = []
-    let size = 0
-    req.on('data', (c: Buffer) => {
-      size += c.length
-      if (size > max) reject(new Error('payload terlalu besar'))
-      else chunks.push(c)
-    })
-    req.on('end', () => resolve(Buffer.concat(chunks)))
-    req.on('error', reject)
-  })
-}
-
-const json = (res: ServerResponse, code: number, data: unknown) => {
-  res.statusCode = code
-  res.setHeader('content-type', 'application/json')
-  res.end(JSON.stringify(data))
-}
 
 function hasTool(cmd: string, arg = '-version') {
   const ff = '/opt/homebrew/opt/ffmpeg-full/bin'
@@ -67,6 +40,11 @@ function referensi(d: { alur?: { slot?: string }[]; teks?: { slot?: string; gaya
   }
 }
 
+const videoContoh = (f: unknown) => {
+  const p = typeof f === 'string' && f ? path.join(CONTOH_DIR, path.basename(f)) : ''
+  return p && existsSync(p) ? fileUrl(p) : null
+}
+
 function patterns() {
   return readdirSync(path.join(SKILL_DIR, 'patterns'))
     .filter((f) => f.endsWith('.json'))
@@ -75,11 +53,13 @@ function patterns() {
       return { id: f.replace(/\.json$/, ''), name: d.name ?? f, deskripsi: d.deskripsi ?? '', durasi: d.durasi_total ?? null, slot: (d.alur ?? []).length,
         minKlip: typeof d.min_klip === 'number' ? d.min_klip : null, idealKlip: Array.isArray(d.ideal_klip) ? d.ideal_klip : null,
         audioPanduan: skillFile(d.audio_panduan), audioUrl: skillFile(d.audio_panduan) ? fileUrl(path.join(SKILL_DIR, d.audio_panduan)) : null,
-        sinkron: d.sinkron === '2beat' ? '2beat' : 'beat', ...referensi(d) }
+        sinkron: d.sinkron === '2beat' ? '2beat' : 'beat', video: videoContoh(d.video_contoh), ...referensi(d) }
     })
 }
 
-const routes: Record<string, (req: IncomingMessage, res: ServerResponse, url: URL) => Promise<void>> = {
+const routes: Record<string, Route> = {
+  ...klipRoutes,
+
   'GET /status': async (_req, res) => {
     json(res, 200, {
       ffmpeg: hasTool('ffmpeg'),
@@ -111,14 +91,6 @@ const routes: Record<string, (req: IncomingMessage, res: ServerResponse, url: UR
     })
   },
 
-  // Jumlah klip mentah (video di level atas folder, tanpa subfolder hasil/_edit).
-  'GET /klip': async (_req, res, url) => {
-    const folder = url.searchParams.get('folder') ?? ''
-    if (!folder || !existsSync(folder) || !statSync(folder).isDirectory()) return json(res, 200, { jumlah: 0 })
-    const jumlah = readdirSync(folder).filter((f) => /\.(mp4|mov|m4v)$/i.test(f) && !f.startsWith('.')).length
-    json(res, 200, { jumlah })
-  },
-
   'GET /videos': async (_req, res, url) => {
     const folder = url.searchParams.get('folder') ?? ''
     json(res, 200, listVideos(folder).map((v) => ({ name: v.name, path: v.path, mtime: v.mtime })))
@@ -128,7 +100,7 @@ const routes: Record<string, (req: IncomingMessage, res: ServerResponse, url: UR
     const p = path.resolve(url.searchParams.get('p') ?? '')
     const ext = path.extname(p).toLowerCase()
     const types: Record<string, string> = {
-      '.mp4': 'video/mp4', '.jpg': 'image/jpeg', '.png': 'image/png', '.ttf': 'font/ttf', '.otf': 'font/otf',
+      '.mp4': 'video/mp4', '.mov': 'video/quicktime', '.m4v': 'video/x-m4v', '.jpg': 'image/jpeg', '.png': 'image/png', '.ttf': 'font/ttf', '.otf': 'font/otf',
       '.m4a': 'audio/mp4', '.mp3': 'audio/mpeg', '.wav': 'audio/wav', '.aac': 'audio/aac',
     }
     if (!types[ext] || !existsSync(p) || !p.startsWith(process.env.HOME ?? '/')) return json(res, 404, { error: 'tidak ada' })
@@ -193,6 +165,8 @@ const routes: Record<string, (req: IncomingMessage, res: ServerResponse, url: UR
     if (existsSync(patFile(name))) return json(res, 409, { error: 'Nama pattern sudah dipakai. Pilih nama lain.' })
     const r = await runScript('analyze_ref.py', [video, '--name', name, '--out', refDir(name)])
     if (!r.startsWith('exit 0')) return json(res, 422, { error: 'Analisis video gagal. Coba video lain.', log: r })
+    // Path video sumber, disalin ke contoh-video/ saat pattern disimpan.
+    writeFileSync(path.join(refDir(name), 'video.txt'), video)
     json(res, 200, { dir: refDir(name), log: r })
   },
 
@@ -225,8 +199,21 @@ const routes: Record<string, (req: IncomingMessage, res: ServerResponse, url: UR
       copyFileSync(audioRef, path.join(SKILL_DIR, 'patterns', 'audio', `${name}.m4a`))
       bersih.audio_panduan = `patterns/audio/${name}.m4a`
     }
+    delete bersih.video_contoh
     writeFileSync(patFile(name), JSON.stringify({ ...bersih, name }, null, 2))
-    json(res, 200, { ok: true })
+    // Video contoh disalin ke contoh-video/<nama>.mp4. Gagal salin tidak menggagalkan simpan pattern.
+    const vt = path.join(refDir(name), 'video.txt')
+    const src = existsSync(vt) ? readFileSync(vt, 'utf8').trim() : ''
+    if (!src || !existsSync(src)) return json(res, 200, { ok: true, videoContoh: null })
+    const { cepat, selesai } = await salinVideoContoh(name, src)
+    // Field video_contoh ditulis setelah file siap. Transcode (bukan h264) jalan di background.
+    const tulis = selesai.then((ok) => {
+      if (!ok || !existsSync(patFile(name))) return false
+      const d = JSON.parse(readFileSync(patFile(name), 'utf8'))
+      writeFileSync(patFile(name), JSON.stringify({ ...d, video_contoh: `${name}.mp4` }, null, 2))
+      return true
+    }).catch((e) => (console.error('[video_contoh]', e), false))
+    json(res, 200, { ok: true, videoContoh: cepat ? ((await tulis) ? 'siap' : null) : 'diproses' })
   },
 
   // Teks dan logo statis dari GUI. render.py membaca <folder>/_edit/overlay.json dan menimpa teks/logo plan.

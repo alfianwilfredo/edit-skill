@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react'
-import { api } from './api'
+import { useState } from 'react'
 import { Icon } from './icons'
+import KlipList from './KlipList'
+import { VideoDialog } from './components/ui/Dialog'
+import { useKlip } from './useKlip'
 import { pretty } from './util'
 import type { Mode } from './useReferensi'
 
-type Pattern = { id: string; name: string; deskripsi: string; durasi: number | null; minKlip?: number | null; idealKlip?: [number, number] | null }
+type Pattern = { id: string; name: string; deskripsi: string; durasi: number | null; minKlip?: number | null; idealKlip?: [number, number] | null; video?: string | null }
 type Props = {
   folder: string
   onPick: () => void
@@ -16,20 +18,16 @@ type Props = {
   setModel: (m: string) => void
   mode: Mode
   setMode: (m: Mode) => void
+  onApplyKlip: (text: string) => void
+  applyDisabled: boolean
 }
 
-export default function BahanPanel({ folder, onPick, patterns, patternId, setPatternId, onNewPattern, model, setModel, mode, setMode }: Props) {
+export default function BahanPanel({ folder, onPick, patterns, patternId, setPatternId, onNewPattern, model, setModel, mode, setMode, onApplyKlip, applyDisabled }: Props) {
   const folderName = folder.split('/').filter(Boolean).pop() ?? ''
   const sel = patterns.find((p) => p.id === patternId)
-  const [jumlah, setJumlah] = useState<number | null>(null)
-  useEffect(() => {
-    if (!folder) return
-    const ac = new AbortController()
-    api<{ jumlah: number }>(`/api/klip?folder=${encodeURIComponent(folder)}`, { signal: ac.signal })
-      .then((r) => setJumlah(r.jumlah)).catch(() => {})
-    return () => ac.abort()
-  }, [folder])
-  const n = folder ? jumlah : null
+  const k = useKlip(folder)
+  const [preview, setPreview] = useState<Pattern | null>(null)
+  const n = folder ? k.jumlah : null
   const kurang = sel?.minKlip && n !== null && n < sel.minKlip
   return (
     <section className="card bahan" id="setup-section">
@@ -41,6 +39,7 @@ export default function BahanPanel({ folder, onPick, patterns, patternId, setPat
           <small>{folder || 'Folder berisi klip mentah proyek'}</small>
         </span>
       </button>
+      {folder && <KlipList key={folder} k={k} onApplyKlip={onApplyKlip} applyDisabled={applyDisabled} />}
 
       <div className="sec-head">
         <h2>Gaya edit</h2>
@@ -48,15 +47,23 @@ export default function BahanPanel({ folder, onPick, patterns, patternId, setPat
       </div>
       <div className="patterns" id="pattern-list" role="radiogroup">
         {patterns.map((p) => (
-          <button key={p.id} id={`pattern-btn-${p.id}`} role="radio" aria-checked={patternId === p.id}
-            className={`pat ${patternId === p.id ? 'on' : ''}`} title={p.deskripsi}
-            onClick={() => setPatternId(patternId === p.id ? '' : p.id)}>
-            <strong>{pretty(p.name)}</strong>
-            <em title={p.idealKlip ? `Ideal ${p.idealKlip[0]}–${p.idealKlip[1]} klip` : undefined}
-              className={p.minKlip && n !== null && n < p.minKlip ? 'kurang' : ''}>
-              {p.minKlip ? `min ${p.minKlip} klip` : ''}{p.minKlip && p.durasi ? ' · ' : ''}{p.durasi ? `${Math.round(p.durasi)} dtk` : ''}
-            </em>
-          </button>
+          <div key={p.id} className="pat-row">
+            <button id={`pattern-btn-${p.id}`} role="radio" aria-checked={patternId === p.id}
+              className={`pat ${patternId === p.id ? 'on' : ''}`} title={p.deskripsi}
+              onClick={() => setPatternId(patternId === p.id ? '' : p.id)}>
+              <strong>{pretty(p.name)}</strong>
+              <em title={p.idealKlip ? `Ideal ${p.idealKlip[0]}–${p.idealKlip[1]} klip` : undefined}
+                className={p.minKlip && n !== null && n < p.minKlip ? 'kurang' : ''}>
+                {p.minKlip ? `min ${p.minKlip} klip` : ''}{p.minKlip && p.durasi ? ' · ' : ''}{p.durasi ? `${Math.round(p.durasi)} dtk` : ''}
+              </em>
+            </button>
+            {p.video && (
+              <button id={`pattern-btn-preview-${p.id}`} className="btn ghost icon pat-play" aria-label="Lihat video contoh"
+                title="Lihat video contoh" onClick={(e) => { e.stopPropagation(); setPreview(p) }}>
+                <Icon name="play" size={14} />
+              </button>
+            )}
+          </div>
         ))}
       </div>
       {kurang && (
@@ -86,6 +93,7 @@ export default function BahanPanel({ folder, onPick, patterns, patternId, setPat
           <option value="claude-opus-5-5">Teliti (lebih lambat)</option>
         </select>
       </label>
+      {preview?.video && <VideoDialog id="pattern-modal-preview" title={pretty(preview.name)} src={preview.video} onClose={() => setPreview(null)} />}
     </section>
   )
 }

@@ -33,3 +33,5 @@ export function setApiKey(key: string) {
     : `${line}\n${old}`
   writeFileSync(ENV_FILE, next, { mode: 0o600 })
 }
+// Video contoh tiap pattern (field video_contoh), dipakai preview di GUI.
+export const CONTOH_DIR = path.resolve(SKILL_DIR, '../contoh-video')

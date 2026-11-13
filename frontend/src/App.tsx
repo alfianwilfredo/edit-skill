@@ -18,7 +18,7 @@ import ProgressCard from './components/ui/ProgressCard'
 import { load, msgOf, save } from './util'
 import type { GrillJawaban } from './grill'
 
-type Pattern = { id: string; name: string; deskripsi: string; durasi: number | null; slot?: number; minKlip?: number | null; idealKlip?: [number, number] | null; teks?: RefTeks[]; logoSlot?: number | null } & AudioPattern
+type Pattern = { id: string; name: string; deskripsi: string; durasi: number | null; slot?: number; minKlip?: number | null; idealKlip?: [number, number] | null; teks?: RefTeks[]; logoSlot?: number | null; video?: string | null } & AudioPattern
 type Status = { engine: 'cli' | 'api'; ffmpeg: boolean; python: boolean; key: boolean; logo: string | null; logoPutih: string | null; models: string[]; patterns: Pattern[] }
 type Video = { name: string; path: string; mtime: number }
 type Brand = { nama_studio: string; instagram: string; cta_default: string; catatan_gaya: string }
@@ -143,7 +143,7 @@ export default function App() {
     const mode = !pattern ? '' : rf.mode === 'ikuti'
       ? ' Mode: ikuti referensi. Salin alur pattern persis (jumlah dan urutan slot, durasi, transisi, efek, bingkai, akhir, logo_segmen, pembuka_segmen); jangan buang atau tukar slot, karena teks overlay memakai nomor shot pattern.'
       : ' Mode: custom. Pattern hanya titik awal gaya (grade, transisi, efek, bingkai); durasi dan jumlah segmen boleh disesuaikan dengan klip. Tulis "mode": "custom" di plan.'
-    send(`Edit klip di folder klip ${pattern ? `pakai pattern "${pattern.name}"` : 'pilih pattern yang paling cocok'}.${mode} Teks dan logo sudah diatur di _edit/overlay.json dari GUI, jangan isi teks/logo di plan dan jangan tanya isi teks.`, 'edit', 'edit')
+    send(`Edit klip di folder klip ${pattern ? `pakai pattern "${pattern.name}"` : 'pilih pattern yang paling cocok'}.${mode} Teks dan logo sudah diatur di _edit/overlay.json dari GUI, jangan isi teks/logo di plan dan jangan tanya isi teks. Peran klip (pembuka, penutup, jangan dipakai) ada di _edit/klip.json, wajib diikuti.`, 'edit', 'edit')
   }
 
   // Render ulang teks & logo dari plan terakhir, tanpa asisten.
@@ -214,7 +214,7 @@ export default function App() {
           <div className="pane-atur" hidden={!show('atur')}>
             <BahanPanel folder={folder} onPick={pickFolder} patterns={status?.patterns ?? []} patternId={patternId}
               setPatternId={setPatternId} onNewPattern={() => switchTab('ref')} model={model} setModel={setModel}
-              mode={rf.mode} setMode={rf.setMode} />
+              mode={rf.mode} setMode={rf.setMode} onApplyKlip={(text) => send(text, 'edit')} applyDisabled={busy || !ready} />
           </div>
           {bp === 'tab' && (
             <div className="pane-tabs seg" role="tablist">

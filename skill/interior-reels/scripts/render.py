@@ -502,6 +502,31 @@ def cek_review(segs, abaikan):
                           "Minta asisten meninjau klip tersebut atau memilih bagian lain.")
             sys.exit("BERHENTI: perbaiki segmen atau isi review. (--abaikan-kualitas juga melewati ini)")
 
+def cek_peran(segs, base):
+    """Pilihan klien di <folder>/_edit/klip.json: pembuka = segmen pertama, penutup = segmen terakhir,
+    jangan = tidak boleh dipakai. Tidak bisa dilewati --abaikan-kualitas."""
+    f = base / "klip.json"
+    if not f.exists():
+        return
+    peran = json.loads(f.read_text())
+    nama = [Path(sg["file"]).name for sg in segs]
+    masalah = []
+    if peran.get("pembuka") and nama[0] != peran["pembuka"]:
+        masalah.append(f"segmen pertama harus {peran['pembuka']} (pilihan klien), sekarang {nama[0]}")
+    if peran.get("penutup") and nama[-1] != peran["penutup"]:
+        masalah.append(f"segmen terakhir harus {peran['penutup']} (pilihan klien), sekarang {nama[-1]}")
+    jangan = set(peran.get("jangan") or [])
+    for i, n in enumerate(nama):
+        if n in jangan:
+            masalah.append(f"segmen {i}: {n} ada di daftar 'jangan dipakai' klien")
+    if masalah:
+        print(f"PERINGATAN klip pilihan ({f}):")
+        for m in masalah:
+            print("  - " + m)
+        progres_gagal("stabil", "Urutan klip tidak sesuai pilihan klip pembuka, penutup, atau klip yang tidak boleh dipakai.",
+                      "Minta asisten menyesuaikan plan dengan pilihan klip.")
+        sys.exit("BERHENTI: plan melanggar klip.json (pilihan klien). Sesuaikan segmen.")
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("plan")
@@ -519,6 +544,7 @@ def main():
     if not segs:
         sys.exit("ERROR: plan tidak punya segmen")
 
+    cek_peran(segs, base)
     cek_review(segs, a.abaikan_kualitas)
     cek_pakai_ulang(segs)
     # overlay.json dari GUI menimpa seluruh teks dan logo di plan.
