@@ -1,0 +1,19 @@
+# Ignore folder skill
+skill/
+
+# OS and Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Frontend dependencies and builds
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+
+# Environment secrets
+frontend/.env
+frontend/.env.*
+*.local
+*.log

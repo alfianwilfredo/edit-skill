@@ -1,0 +1,192 @@
+/* ChatPanel + RefPanel (compact). Selectors scoped to .chat / .ref so they win over generic App.css rules. */
+
+/* ---------- chat ---------- */
+.chat {
+  display: flex; flex-direction: column; padding: 0; overflow: hidden; min-width: 0;
+  height: 100%; min-height: 0; max-height: calc(100dvh - 96px);
+}
+.chat .chat-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.chat > .chat-head { flex: none; padding: 8px 12px; border-bottom: 1px solid var(--border); }
+.chat .who { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.chat .who strong { display: block; font-size: 13px; line-height: 18px; }
+.chat .who small { display: block; font-size: 11px; line-height: 14px; color: var(--muted); }
+.chat .who small.live { color: var(--accent); }
+.chat .avatar { width: 28px; height: 28px; flex: none; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; }
+
+.chat .thread {
+  flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+  display: flex; flex-direction: column; gap: 6px; padding: 12px;
+  background: linear-gradient(var(--surface), var(--surface-2));
+}
+.chat .empty { margin: auto; max-width: 420px; text-align: center; padding: 12px 4px; }
+.chat .empty-icon { width: 44px; height: 44px; border-radius: 12px; background: var(--accent-soft); color: var(--accent); display: inline-grid; place-items: center; margin-bottom: 8px; }
+.chat .empty h3 { margin: 0 0 4px; font-size: 16px; letter-spacing: -.01em; }
+.chat .empty p { margin: 0 0 12px; color: var(--muted); font-size: 13px; line-height: 1.45; }
+.chat .suggest { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.chat .sug { font: inherit; font-size: 12px; min-height: 28px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer; }
+.chat .sug:hover { border-color: var(--accent); color: var(--accent); }
+
+.chat .msg { max-width: min(82%, 620px); padding: 7px 11px; border-radius: 14px; font-size: 13px; line-height: 1.45; white-space: pre-wrap; word-break: break-word; animation: chat-rise .2s ease-out; }
+.chat .msg.user { align-self: flex-end; background: var(--primary); color: var(--on-primary); border-bottom-right-radius: 5px; }
+.chat .msg.assistant { align-self: flex-start; background: var(--surface); border: 1px solid var(--border); border-bottom-left-radius: 5px; }
+.chat .msg.tool { align-self: flex-start; display: flex; align-items: center; gap: 6px; font-size: 11px; line-height: 16px; color: var(--muted); padding: 0 4px; font-family: ui-monospace, Menlo, monospace; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chat .msg.tool i { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); opacity: .6; flex: none; }
+.chat .msg.error { align-self: stretch; max-width: none; background: var(--err-bg); color: var(--bad); }
+.chat .typing { display: flex; gap: 4px; padding: 10px 12px; }
+.chat .typing span { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); animation: chat-blink 1.2s infinite ease-in-out; }
+.chat .typing span:nth-child(2) { animation-delay: .15s; }
+.chat .typing span:nth-child(3) { animation-delay: .3s; }
+@keyframes chat-blink { 0%, 80%, 100% { opacity: .25; transform: translateY(0); } 40% { opacity: 1; transform: translateY(-3px); } }
+@keyframes chat-rise { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+.chat .dock { flex: none; position: sticky; bottom: 0; padding: 8px 12px 10px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px; background: var(--surface); }
+.chat .quick { display: flex; gap: 6px; flex-wrap: wrap; }
+.chat .quick .btn { min-height: 32px; padding: 4px 10px; font-size: 12px; }
+.chat .composer { display: flex; gap: 6px; align-items: flex-end; padding: 3px 3px 3px 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); transition: border-color .15s, box-shadow .15s; }
+.chat .composer:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
+.chat .composer textarea { flex: 1; min-width: 0; border: none; box-shadow: none; padding: 6px 0; min-height: 30px; max-height: 140px; font-size: 13px; line-height: 18px; resize: none; background: transparent; field-sizing: content; }
+.chat .composer textarea:focus { box-shadow: none; }
+.chat .send { width: 32px; height: 32px; flex: none; border-radius: 9px; border: none; background: var(--accent); color: #fff; display: grid; place-items: center; cursor: pointer; }
+.chat .send:disabled { opacity: .35; cursor: not-allowed; }
+
+/* ---------- gaya baru (RefPanel) ---------- */
+.ref { padding: 12px; min-width: 0; }
+.ref .ref-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.ref .ref-head h2 { font-size: 14px; margin: 0; }
+.ref .ref-head .hint { margin-top: 2px; }
+.ref .hint { color: var(--muted); font-size: 12px; line-height: 1.4; margin: 6px 0 0; }
+.ref .step { display: flex; gap: 10px; }
+.ref .step + .step { margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border); }
+.ref .step-no { flex: none; width: 20px; height: 20px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-size: 11px; font-weight: 700; display: grid; place-items: center; margin-top: -1px; }
+.ref .step-main { flex: 1; min-width: 0; }
+.ref .step-main h2 { font-size: 13px; margin: 0 0 6px; }
+.ref .step-main > .chat-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin: -4px 0 6px; }
+.ref .step-main > .chat-head h2 { margin: 0; }
+
+.ref .picker { min-height: 36px; padding: 6px 10px; gap: 8px; border-radius: 10px; }
+.ref .picker-text strong { font-size: 13px; }
+.ref input, .ref select { min-height: 36px; padding: 7px 11px; font-size: 13px; line-height: 20px; border-radius: 9px; }
+.ref .btn { min-height: 36px; padding: 6px 12px; font-size: 13px; }
+.ref .btn.ghost { min-height: 30px; padding: 4px 8px; font-size: 12px; }
+.ref .btn.block { width: 100%; margin-top: 10px; }
+.ref .row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+
+.ref .ref-imgs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr)); gap: 8px; }
+.ref .ref-imgs figure { margin: 0; min-width: 0; }
+.ref .ref-imgs img { width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); display: block; background: var(--surface-2); }
+.ref .ref-imgs figcaption { font-size: 11px; color: var(--muted); margin-top: 3px; }
+.ref .ref-alur { width: 100%; border-collapse: collapse; font-size: 11.5px; margin-top: 10px; }
+.ref .ref-alur th { text-align: left; font-weight: 600; color: var(--muted); padding: 3px 6px 4px; border-bottom: 1px solid var(--border); font-size: 11px; }
+.ref .ref-alur td { padding: 4px 6px; border-bottom: 1px solid color-mix(in srgb, var(--border) 50%, transparent); vertical-align: top; line-height: 1.4; }
+.ref .ref-alur td code { font-size: 10.5px; background: var(--surface-2); padding: 1px 5px; border-radius: 4px; }
+.ref .ref-alur td.muted { color: var(--muted); white-space: nowrap; }
+.ref .badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; margin-bottom: 6px; }
+.ref .badge.warn { background: var(--warn-bg); color: var(--warn-text); }
+.ref .badge.ok { background: color-mix(in srgb, var(--ok) 15%, transparent); color: var(--ok); }
+.ref .draft { width: 100%; min-height: 180px; max-height: 50vh; margin-bottom: 8px; padding: 8px 10px; font-size: 12px; line-height: 1.45; resize: vertical; overflow: auto; white-space: pre; }
+.ref .notice { margin: 10px 0 0; padding: 8px 10px; font-size: 13px; }
+.ref .notice.ok { background: color-mix(in srgb, var(--ok) 13%, transparent); color: var(--ok); }
+.ref .picker:disabled { opacity: .6; cursor: not-allowed; }
+
+/* ---------- touch / mobile: 42px controls ---------- */
+@media (max-width: 767px), (pointer: coarse) {
+  .chat .quick .btn, .chat .sug { min-height: 42px; }
+  .chat .composer textarea { min-height: 36px; font-size: 16px; /* cegah zoom iOS */ }
+  .chat .send { width: 42px; height: 42px; }
+  .ref .picker, .ref input, .ref select, .ref .btn { min-height: 42px; }
+  .ref .btn.ghost { min-height: 42px; }
+  .ref input, .ref select, .ref .draft { font-size: 16px; }
+}
+@media (max-width: 767px) {
+  .chat { max-height: none; border-radius: 0; }
+  .chat .msg { max-width: 90%; }
+  .chat .dock { padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
+  .ref .ref-head { flex-wrap: wrap; }
+  .ref .row > .btn { flex: 1 1 140px; }
+}
+
+/* FontPicker: tombol isi satu sel grid, panel membentang penuh di bawahnya. */
+.fp-trigger { display: flex; align-items: center; justify-content: space-between; gap: 6px; min-width: 0; min-height: 36px; padding: 4px 10px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer; text-align: left; }
+.fp-trigger.on, .fp-trigger:focus-visible { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
+.fp-name { font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.fp-trigger small { font-size: 10px; color: var(--muted); white-space: nowrap; }
+.fp-panel { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 6px; padding: 8px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface-2); min-width: 0; }
+.fp-kat { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+.fp-kat button { flex: none; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--muted); cursor: pointer; }
+.fp-kat button.on { background: var(--primary); border-color: var(--primary); color: var(--on-primary); }
+.fp-list { display: flex; flex-direction: column; gap: 4px; max-height: 300px; overflow-y: auto; scrollbar-width: thin; }
+.fp-item { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 8px 10px; border-radius: 10px; border: 1px solid transparent; background: var(--surface); color: var(--text); cursor: pointer; text-align: left; min-width: 0; }
+.fp-item:hover { border-color: var(--border-strong); }
+.fp-item.on { border-color: var(--accent); background: var(--accent-soft); }
+.fp-sample { font-size: 21px; line-height: 1.25; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fp-meta { font-size: 11.5px; color: var(--muted); }
+.fp-meta strong { color: var(--text); font-weight: 600; }
+.fp-cocok { font-size: 11px; color: var(--muted); }
+@media (max-width: 767px), (pointer: coarse) { .fp-trigger { min-height: 42px; } }
+.ov-2:has(.fp-panel) { grid-auto-flow: row dense; }
+.mk-baris { display: block; }
+.ov-baris { display: flex; flex-direction: column; gap: 6px; padding: 8px; border-radius: 10px; border: 1px dashed var(--border-strong); }
+.ov-baris-row { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.ov-baris-label { font-size: 11.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Modal konfirmasi */
+.modal-bg { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 16px; background: color-mix(in srgb, #000 45%, transparent); animation: modal-in .15s ease-out; }
+.modal { width: min(440px, 100%); max-height: calc(100dvh - 32px); overflow: auto; background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px; display: grid; gap: 12px; animation: modal-up .18s ease-out; }
+.modal h3 { margin: 0; font-size: 16px; }
+.modal-isi { font-size: 14px; line-height: 1.5; color: var(--text); }
+.modal-isi ul { margin: 6px 0 0; padding-left: 18px; }
+.modal-isi p { margin: 0 0 6px; }
+.modal-aksi { display: flex; flex-wrap: wrap-reverse; justify-content: flex-end; gap: 8px; }
+.modal-aksi .btn { min-height: 42px; }
+@media (max-width: 480px) { .modal-aksi .btn { flex: 1 1 100%; } }
+@keyframes modal-in { from { opacity: 0; } }
+@keyframes modal-up { from { opacity: 0; transform: translateY(8px) scale(.98); } }
+@media (prefers-reduced-motion: reduce) { .modal-bg, .modal { animation: none; } }
+
+/* Mode edit + penanda teks wajib referensi */
+.mode-edit .seg button { min-height: 36px; }
+.badge-ref { display: inline-block; font-size: 11px; font-weight: 600; padding: 1px 7px; border-radius: 999px; background: var(--surface-2); color: var(--muted); border: 1px solid var(--border); margin-left: 6px; vertical-align: middle; }
+.badge-ref.wajib { background: var(--warn-bg); color: var(--warn-text); border-color: transparent; }
+.ov-teks.wajib { box-shadow: inset 0 -2px 0 var(--warn-text); }
+
+/* kartu progres proses latar */
+.progress-card { align-self: stretch; max-width: 620px; width: 100%; min-width: 0; box-sizing: border-box; padding: 12px 14px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface-2); display: flex; flex-direction: column; gap: 10px; animation: chat-rise .2s ease-out; }
+.progress-card .pc-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.progress-card .pc-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.progress-card .pc-text strong { font-size: 13px; line-height: 1.4; overflow-wrap: anywhere; }
+.progress-card .pc-text small { font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
+.progress-card .pc-persen { flex: none; font-size: 22px; font-weight: 700; line-height: 1; color: var(--primary); font-variant-numeric: tabular-nums; }
+.progress-card .pc-bar { height: 8px; border-radius: 99px; background: var(--border); overflow: hidden; }
+.progress-card .pc-bar i { display: block; height: 100%; border-radius: inherit; background: var(--accent); transition: width .4s ease; }
+.progress-card .pc-bar.tak-tentu i { animation: pc-geser 1.4s infinite ease-in-out; }
+.progress-card.selesai .pc-bar i { background: var(--ok); }
+.progress-card.gagal { background: var(--err-bg); border-color: var(--bad); }
+.progress-card.gagal .pc-bar i { background: var(--bad); }
+.progress-card.gagal .pc-persen, .progress-card.gagal .pc-text strong { color: var(--bad); }
+.progress-card.batal .pc-bar i { background: var(--muted); }
+.progress-card.batal .pc-text strong { color: var(--muted); }
+.progress-card .pc-gagal p { margin: 0; font-size: 13px; line-height: 1.45; overflow-wrap: anywhere; }
+.progress-card .pc-gagal .pc-saran { margin-top: 4px; color: var(--text); }
+.progress-card .pc-tahap { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 190px), 1fr)); gap: 4px 12px; }
+.progress-card .pc-tahap li { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); min-width: 0; }
+.progress-card .pc-tahap .pc-nama { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.progress-card .pc-tahap small { flex: none; font-size: 11px; }
+.progress-card .pc-tanda { flex: none; width: 14px; text-align: center; }
+.progress-card .pc-tahap li.selesai, .progress-card .pc-tahap li.cache { color: var(--text); }
+.progress-card .pc-tahap li.selesai .pc-tanda, .progress-card .pc-tahap li.cache .pc-tanda { color: var(--ok); }
+.progress-card .pc-tahap li.jalan { color: var(--text); font-weight: 600; }
+.progress-card .pc-tahap li.jalan .pc-tanda { color: var(--accent); animation: pc-denyut 1.2s infinite ease-in-out; }
+.progress-card .pc-tahap li.gagal, .progress-card .pc-tahap li.gagal .pc-tanda { color: var(--bad); }
+.progress-card .pc-aksi { display: flex; flex-wrap: wrap; gap: 8px; }
+.progress-card .pc-aksi:empty { display: none; }
+.progress-card .pc-aksi .btn { min-height: 34px; font-size: 12px; }
+.progress-card .pc-log { margin: 0; max-height: 220px; overflow: auto; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--muted); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; line-height: 1.45; white-space: pre-wrap; word-break: break-all; }
+@keyframes pc-denyut { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+@keyframes pc-geser { 0% { transform: translateX(-100%); } 100% { transform: translateX(340%); } }
+@media (max-width: 480px) { .progress-card .pc-aksi .btn { min-height: 42px; flex: 1 1 140px; } }
+
+/* bar tipis di bawah header (mobile/tablet, saat chat tersembunyi) */
+.progress-mini { display: flex; align-items: center; gap: 8px; padding: 4px 0 8px; font-size: 11px; font-weight: 600; color: var(--muted); }
+.progress-mini .pm-bar { flex: 1; min-width: 0; height: 4px; border-radius: 99px; background: var(--border); overflow: hidden; }
+.progress-mini .pm-bar i { display: block; height: 100%; background: var(--accent); transition: width .4s ease; }
+.progress-mini span { flex: none; font-variant-numeric: tabular-nums; }
