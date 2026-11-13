@@ -1,4 +1,5 @@
 import { useEffect, useEffectEvent, useRef, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import { Icon } from '../../icons'
 
 type Props = { id: string; title: string; onClose: () => void; children: ReactNode; wide?: boolean }
@@ -16,7 +17,8 @@ export function Dialog({ id, title, onClose, children, wide }: Props) {
     window.addEventListener('keydown', key)
     return () => { window.removeEventListener('keydown', key); document.body.style.overflow = overflow; asal?.focus?.() }
   }, [])
-  return (
+  // Portal ke body: di dalam panel, modal terkunci di stacking context panel dan tertutup panel lain.
+  return createPortal(
     <div className="modal-bg" id={`${id}-backdrop`} onMouseDown={(e) => { if (e.target === e.currentTarget) onClose() }}>
       <div className={`modal${wide ? ' wide' : ''}`} id={id} role="dialog" aria-modal="true" aria-labelledby={`${id}-title`}>
         <div className="modal-head">
@@ -27,7 +29,8 @@ export function Dialog({ id, title, onClose, children, wide }: Props) {
         </div>
         {children}
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }
 

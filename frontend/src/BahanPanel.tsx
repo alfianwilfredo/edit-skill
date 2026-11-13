@@ -57,12 +57,12 @@ export default function BahanPanel({ folder, onPick, patterns, patternId, setPat
                 {p.minKlip ? `min ${p.minKlip} klip` : ''}{p.minKlip && p.durasi ? ' · ' : ''}{p.durasi ? `${Math.round(p.durasi)} dtk` : ''}
               </em>
             </button>
-            {p.video && (
+            {p.video ? (
               <button id={`pattern-btn-preview-${p.id}`} className="btn ghost icon pat-play" aria-label="Lihat video contoh"
                 title="Lihat video contoh" onClick={(e) => { e.stopPropagation(); setPreview(p) }}>
                 <Icon name="play" size={14} />
               </button>
-            )}
+            ) : <span className="btn ghost icon pat-play pat-play-kosong" aria-hidden="true" />}
           </div>
         ))}
       </div>

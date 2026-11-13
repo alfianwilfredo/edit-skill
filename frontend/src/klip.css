@@ -23,6 +23,10 @@
 .pat-row { display: flex; align-items: center; gap: 2px; flex: none; min-width: 0; }
 .pat-row .pat { flex: 1; min-width: 0; }
 .pat-play { flex: none; color: var(--accent); }
+/* Pengganti ▶ untuk gaya tanpa video contoh, supaya kolom keterangan tetap sejajar. */
+.pat-play-kosong { visibility: hidden; pointer-events: none; }
+/* Nama gaya boleh 2 baris; panel sempit + tombol ▶ membuat nama terpotong. */
+.pat-row .pat strong { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.25; }
 
 /* Dialog umum */
 .modal.wide { width: min(560px, 100%); }
